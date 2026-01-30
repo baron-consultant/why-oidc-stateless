@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>연구 계획: OIDC 및 JWT 기반 무상태 아키텍처</title>
+    <title>확장 가능한 전략: OIDC 및 JWT 기반 무상태 아키텍처</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
@@ -40,6 +40,8 @@
                 height: 350px;
             }
         }
+        html { scroll-behavior: smooth; }
+        .content-section { scroll-margin-top: 6rem; } /* account for fixed header on small screens */
     </style>
 </head>
 <body class="bg-slate-50 text-slate-800 font-sans antialiased selection:bg-indigo-100 selection:text-indigo-900">
@@ -65,32 +67,32 @@
         <!-- Sidebar -->
         <aside class="w-64 bg-slate-900 text-slate-300 flex flex-col flex-shrink-0 shadow-xl z-20 transition-all duration-300 hidden md:flex">
             <div class="p-6 border-b border-slate-700">
-                <h1 class="text-xl font-bold text-white tracking-tight">Research<span class="text-indigo-400">Hub</span></h1>
+                <h1 class="text-xl font-bold text-white tracking-tight">Baron<span class="text-indigo-400">기술기획</span></h1>
                 <p class="text-xs text-slate-400 mt-1">OIDC & Stateless Auth</p>
             </div>
             
             <nav class="flex-1 overflow-y-auto py-4">
                 <ul class="space-y-1 px-3">
                     <li>
-                        <button onclick="router('overview')" class="nav-item w-full text-left px-4 py-3 rounded-lg hover:bg-slate-800 hover:text-white transition-colors flex items-center gap-3 group focus:outline-none focus:ring-2 focus:ring-indigo-500" data-target="overview">
+                        <button onclick="navigate('overview')" class="nav-item w-full text-left px-4 py-3 rounded-lg hover:bg-slate-800 hover:text-white transition-colors flex items-center gap-3 group focus:outline-none focus:ring-2 focus:ring-indigo-500" data-target="overview">
                             <span class="text-lg opacity-70 group-hover:opacity-100">📊</span>
-                            <span class="font-medium">연구 개요</span>
+                            <span class="font-medium">보고서 개요</span>
                         </button>
                     </li>
                     <li>
-                        <button onclick="router('architecture')" class="nav-item w-full text-left px-4 py-3 rounded-lg hover:bg-slate-800 hover:text-white transition-colors flex items-center gap-3 group focus:outline-none focus:ring-2 focus:ring-indigo-500" data-target="architecture">
+                        <button onclick="navigate('architecture')" class="nav-item w-full text-left px-4 py-3 rounded-lg hover:bg-slate-800 hover:text-white transition-colors flex items-center gap-3 group focus:outline-none focus:ring-2 focus:ring-indigo-500" data-target="architecture">
                             <span class="text-lg opacity-70 group-hover:opacity-100">🏗️</span>
                             <span class="font-medium">OIDC 아키텍처</span>
                         </button>
                     </li>
                     <li>
-                        <button onclick="router('jwt')" class="nav-item w-full text-left px-4 py-3 rounded-lg hover:bg-slate-800 hover:text-white transition-colors flex items-center gap-3 group focus:outline-none focus:ring-2 focus:ring-indigo-500" data-target="jwt">
+                        <button onclick="navigate('jwt')" class="nav-item w-full text-left px-4 py-3 rounded-lg hover:bg-slate-800 hover:text-white transition-colors flex items-center gap-3 group focus:outline-none focus:ring-2 focus:ring-indigo-500" data-target="jwt">
                             <span class="text-lg opacity-70 group-hover:opacity-100">🔐</span>
                             <span class="font-medium">JWT vs Session</span>
                         </button>
                     </li>
                     <li>
-                        <button onclick="router('implementation')" class="nav-item w-full text-left px-4 py-3 rounded-lg hover:bg-slate-800 hover:text-white transition-colors flex items-center gap-3 group focus:outline-none focus:ring-2 focus:ring-indigo-500" data-target="implementation">
+                        <button onclick="navigate('implementation')" class="nav-item w-full text-left px-4 py-3 rounded-lg hover:bg-slate-800 hover:text-white transition-colors flex items-center gap-3 group focus:outline-none focus:ring-2 focus:ring-indigo-500" data-target="implementation">
                             <span class="text-lg opacity-70 group-hover:opacity-100">🛠️</span>
                             <span class="font-medium">구현 툴킷</span>
                         </button>
@@ -100,10 +102,10 @@
 
             <div class="p-4 border-t border-slate-700 bg-slate-800/50">
                 <div class="flex items-center gap-3">
-                    <div class="w-8 h-8 rounded-full bg-indigo-500 flex items-center justify-center text-white font-bold text-xs">PI</div>
+                    <div class="w-8 h-8 rounded-full bg-indigo-500 flex items-center justify-center text-white font-bold text-xs">BR</div>
                     <div>
-                        <p class="text-sm font-medium text-white">책임 연구원</p>
-                        <p class="text-xs text-slate-400">프로젝트 리더</p>
+                        <p class="text-sm font-medium text-white">기술 개발팀</p>
+                        <p class="text-xs text-slate-400">총괄기획실</p>
                     </div>
                 </div>
             </div>
@@ -129,20 +131,20 @@
         // Data Store
         const appData = {
             overview: {
-                title: "연구 계획 수정: Stateless ID 관리",
-                summary: "본 연구는 전통적인 자체 데이터베이스 기반의 사용자 관리 시스템에서 벗어나, OIDC(OpenID Connect)와 JWT(JSON Web Token)를 활용한 'User Table 없는' 아키텍처로의 전환을 제안합니다.",
+                title: "Stateless ID 관리",
+                summary: "본 보고서는 개별 서비스가 직접 사용자 관리하는 시스템에서 벗어나, OIDC(OpenID Connect)와 JWT(JSON Web Token)를 활용한 'User Table 없는' 아키텍처로의 전환을 제안합니다.",
                 goals: [
-                    { icon: "🛡️", title: "보안 강화", desc: "개인정보(PII) 저장 최소화 및 중앙화된 인증 위임" },
-                    { icon: "🚀", title: "확장성 확보", desc: "Stateless 아키텍처를 통한 오토스케일링 용이성" },
-                    { icon: "⚡", title: "개발 효율성", desc: "인증 로직 구현 비용 절감 및 표준 프로토콜 준수" }
+                    { icon: "🛡️", title: "보안 강화", desc: "개인정보(PII) 저장 최소 - 중앙화된 인증 위임" },
+                    { icon: "🚀", title: "확장성 확보", desc: "Stateless 아키텍처 - 스케일링 용이성" },
+                    { icon: "⚡", title: "개발 효율성", desc: "인증 로직 구현 비용 절감, 표준 프로토콜 준수" }
                 ]
             },
             architecture: {
                 benefits: [
-                    { title: "PII 리스크 제로", desc: "비밀번호, 이메일 등 민감 정보를 직접 DB에 저장하지 않아 유출 사고 시 책임 소재가 대폭 감소합니다." },
+                    { title: "PII 리스크", desc: "비밀번호, 이메일 등 민감 정보를 직접 DB에 저장하지 않아 유출 사고 시 책임 소재가 대폭 감소합니다." },
                     { title: "글로벌 규정 준수", desc: "GDPR, CCPA 등 복잡한 데이터 주권 및 삭제 요구사항을 IdP(Identity Provider)에 위임할 수 있습니다." },
-                    { title: "통합 관리 (SSO)", desc: "여러 서비스(Microservices) 간에 별도의 회원가입 없이 단일 ID로 접근 제어가 가능합니다." },
-                    { title: "스키마 유연성", desc: "사용자 속성이 변경되어도 DB 마이그레이션 없이 IdP 설정 변경만으로 대응 가능합니다." }
+                    { title: "통합 관리 (SSO)", desc: "여러 서비스간에 별도의 회원가입 없이 단일 ID로 접근 제어가 가능합니다." },
+                    { title: "스키마 유연성", desc: "사용자 속성이 변경되어도 DB 마이그레이션 없이 IdP 변경만으로 대응 가능합니다." }
                 ]
             },
             jwt: {
@@ -154,15 +156,15 @@
                 ]
             },
             toolkit: [
-                { stack: "PHP", category: "Backend", name: "firebase/php-jwt", desc: "가장 널리 쓰이는 경량 JWT 디코딩 라이브러리. 의존성이 적어 레거시 통합에 유리.", link: "Composer" },
-                { stack: "PHP", category: "Backend", name: "auth0/auth0-php", desc: "OIDC 전체 흐름을 처리하는 강력한 SDK. 로그인 리다이렉트 및 토큰 검증 자동화.", link: "SDK" },
-                { stack: "Go", category: "Backend", name: "golang-jwt/jwt", desc: "Go 생태계 표준. 서명 검증 및 클레임 파싱 성능이 매우 뛰어남.", link: "Module" },
-                { stack: "Go", category: "Backend", name: "coreos/go-oidc", desc: "OIDC Discovery 문서를 통해 퍼블릭 키를 자동 갱신하고 검증하는 로직 내장.", link: "Library" },
-                { stack: "Node (Express)", category: "Backend", name: "express-oauth2-jwt-bearer", desc: "미들웨어 형태로 토큰 검증. 라우트 별 보호가 매우 간편함.", link: "Middleware" },
-                { stack: "Node (React)", category: "Frontend", name: "react-oidc-context", desc: "React Context API 기반. 훅(Hook)을 통해 로그인 상태와 사용자 정보를 전역 관리.", link: "NPM" },
-                { stack: "Node (React)", category: "Frontend", name: "oidc-client-ts", desc: "순수 TypeScript OIDC 클라이언트. 프로토콜 레벨의 세밀한 제어 가능.", link: "NPM" },
-                { stack: "Flutter", category: "Mobile", name: "flutter_appauth", desc: "AppAuth 네이티브 SDK 래퍼. PKCE 흐름을 완벽 지원하여 보안성 최상.", link: "Pub.dev" },
-                { stack: "Flutter", category: "Mobile", name: "dart_jsonwebtoken", desc: "순수 Dart JWT 파서. 서버 없이 로컬에서 토큰 내용을 디코딩하고 만료 시간을 체크.", link: "Pub.dev" }
+                { stack: "PHP", category: "Backend", name: "firebase/php-jwt", desc: "가장 널리 쓰이는 경량 JWT 디코딩 라이브러리. 의존성이 적어 레거시 통합에 유리.", link: "GitHub / Packagist", url: "https://github.com/firebase/php-jwt" },
+                { stack: "PHP", category: "Backend", name: "auth0/auth0-php", desc: "OIDC 전체 흐름을 처리하는 강력한 SDK. 로그인 리다이렉트 및 토큰 검증 자동화.", link: "GitHub / Packagist", url: "https://github.com/auth0/auth0-PHP" },
+                { stack: "Go", category: "Backend", name: "golang-jwt/jwt", desc: "Go 생태계 표준. 서명 검증 및 클레임 파싱 성능이 매우 뛰어남.", link: "GitHub / Go Module", url: "https://github.com/golang-jwt/jwt" },
+                { stack: "Go", category: "Backend", name: "coreos/go-oidc", desc: "OIDC Discovery 문서를 통해 퍼블릭 키를 자동 갱신하고 검증하는 로직 내장.", link: "GitHub / Module", url: "https://github.com/coreos/go-oidc" },
+                { stack: "Node (Express)", category: "Backend", name: "@auth0/express-oauth2-jwt-bearer", desc: "미들웨어 형태로 토큰 검증. 라우트 별 보호가 매우 간편함.", link: "NPM", url: "https://www.npmjs.com/package/@auth0/express-oauth2-jwt-bearer" },
+                { stack: "Node (React)", category: "Frontend", name: "react-oidc-context", desc: "React Context API 기반. 훅(Hook)을 통해 로그인 상태와 사용자 정보를 전역 관리.", link: "NPM", url: "https://www.npmjs.com/package/react-oidc-context" },
+                { stack: "Node (React)", category: "Frontend", name: "oidc-client-ts", desc: "순수 TypeScript OIDC 클라이언트. 프로토콜 레벨의 세밀한 제어 가능.", link: "NPM", url: "https://www.npmjs.com/package/oidc-client-ts" },
+                { stack: "Flutter", category: "Mobile", name: "flutter_appauth", desc: "AppAuth 네이티브 SDK 래퍼. PKCE 흐름을 완벽 지원하여 보안성 최상.", link: "Pub.dev", url: "https://pub.dev/packages/flutter_appauth" },
+                { stack: "Flutter", category: "Mobile", name: "dart_jsonwebtoken", desc: "순수 Dart JWT 파서. 서버 없이 로컬에서 토큰 내용을 디코딩하고 만료 시간을 체크.", link: "Pub.dev", url: "https://pub.dev/packages/dart_jsonwebtoken" }
             ]
         };
 
@@ -200,6 +202,16 @@
                 default:
                     renderOverview(contentArea);
             }
+
+            // After rendering, scroll to and focus the section for direct linking
+            setTimeout(() => {
+                const section = document.getElementById(route);
+                if(section) {
+                    section.setAttribute('tabindex','-1');
+                    section.focus({preventScroll:true});
+                    section.scrollIntoView({behavior:'smooth', block:'start'});
+                }
+            }, 60);
         }
 
         // --- Render Functions ---
@@ -208,12 +220,12 @@
             const data = appData.overview;
             
             container.innerHTML = `
-                <div class="space-y-6 animate-fade-in">
+                <section id="overview" class="content-section space-y-6 animate-fade-in" tabindex="-1">
                     <!-- Intro Header -->
                     <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-200">
                         <span class="inline-block px-3 py-1 bg-indigo-100 text-indigo-700 rounded-full text-xs font-semibold mb-4 tracking-wide uppercase">Research Plan V2.0</span>
                         <h2 class="text-3xl font-bold text-slate-900 mb-4">${data.title}</h2>
-                        <p class="text-lg text-slate-600 leading-relaxed max-w-3xl">${data.summary}</p>
+                        <p class="text-lg text-slate-600 leading-relaxed max-w-5xl mx-auto">${data.summary}</p>
                     </div>
 
                     <!-- Key Goals Grid -->
@@ -230,9 +242,9 @@
                     <!-- Call to Action / Next Step Context -->
                     <div class="bg-slate-100 p-6 rounded-xl border-l-4 border-indigo-500">
                         <h4 class="font-bold text-slate-900 mb-2">연구 방향 수정 핵심</h4>
-                        <p class="text-sm text-slate-700">기존의 '자체 인증 시스템 구축' 계획을 폐기하고, <strong>외부 IdP(Identity Provider)와 연동된 무상태(Stateless) 아키텍처</strong>로 전환합니다. 이를 통해 개발 리소스를 비즈니스 로직에 집중하고 보안 리스크를 외부로 이관합니다.</p>
+                        <p class="text-sm text-slate-700">기존의 '개별 시스템 인증 시스템'을 폐기하고, <strong>바론 통합로그인(Identity Provider)와 연동된 무상태(Stateless) 아키텍처</strong>로 전환합니다. 이를 통해 개발 리소스를 비즈니스 로직에 집중하고 보안 리스크를 관리합니다.</p>
                     </div>
-                </div>
+                </section>
             `;
         }
 
@@ -240,7 +252,7 @@
             const data = appData.architecture;
             
             container.innerHTML = `
-                <div class="space-y-8 animate-fade-in">
+                <section id="architecture" class="content-section space-y-8 animate-fade-in" tabindex="-1">
                     <!-- Section Intro -->
                     <div>
                         <h2 class="text-2xl font-bold text-slate-900 mb-3">OIDC 기반 무상태(Stateless) 아키텍처</h2>
@@ -261,7 +273,6 @@
 
                             <div class="flex-1 h-px bg-slate-300 relative mx-4">
                                 <div class="absolute -top-3 left-1/2 transform -translate-x-1/2 text-xs text-slate-500 bg-white px-2">1. Redirect</div>
-                                <span class="absolute right-0 -top-1.5 text-slate-300">▶</span>
                             </div>
 
                             <!-- IdP -->
@@ -269,19 +280,18 @@
                                 <div class="w-32 h-16 bg-indigo-50 rounded-lg flex items-center justify-center text-xl border-2 border-indigo-200 group-hover:border-indigo-500 transition-colors">
                                     🏢 OIDC IdP
                                 </div>
-                                <span class="mt-2 font-bold text-indigo-700">Identity Provider</span>
-                                <span class="text-xs text-slate-500">Google, Auth0, Kakao</span>
+                                <span class="mt-2 font-bold text-indigo-700">바론 통합로그인</span>
+                                <span class="text-xs text-slate-500">Identity Provider</span>
                             </div>
 
                             <div class="flex-1 h-px bg-slate-300 relative mx-4">
                                 <div class="absolute -top-3 left-1/2 transform -translate-x-1/2 text-xs text-slate-500 bg-white px-2">2. Issue JWT (ID Token)</div>
-                                <span class="absolute right-0 -top-1.5 text-slate-300">▶</span>
                             </div>
 
                             <!-- App Server -->
                             <div class="flex flex-col items-center group cursor-pointer">
                                 <div class="w-32 h-16 bg-green-50 rounded-lg flex items-center justify-center text-xl border-2 border-green-200 group-hover:border-green-500 transition-colors">
-                                    ⚙️ App Server
+                                    개별 서비스
                                 </div>
                                 <span class="mt-2 font-bold text-green-700">Backend API</span>
                                 <span class="text-xs text-slate-500">Stateless Verification</span>
@@ -308,13 +318,13 @@
                             </div>
                         `).join('')}
                     </div>
-                </div>
+                </section>
             `;
         }
 
         function renderJWT(container) {
             container.innerHTML = `
-                <div class="space-y-8 animate-fade-in">
+                <section id="jwt" class="content-section space-y-8 animate-fade-in" tabindex="-1">
                     <!-- Intro -->
                     <div>
                         <h2 class="text-2xl font-bold text-slate-900 mb-3">기술적 제안: 왜 JWT인가?</h2>
@@ -377,7 +387,7 @@
                             <p class="text-sm text-slate-600">웹뷰가 아닌 네이티브 앱 통신에서는 쿠키 관리가 까다롭습니다. JWT는 단순 문자열로 저장 및 전송이 가능하여 Flutter, iOS, Android 등 모든 클라이언트에서 동일한 로직을 사용합니다.</p>
                         </div>
                     </div>
-                </div>
+                </section>
             `;
 
             // Initialize Chart after DOM is ready
@@ -386,7 +396,7 @@
 
         function renderImplementation(container) {
             container.innerHTML = `
-                <div class="space-y-8 animate-fade-in">
+                <section id="implementation" class="content-section space-y-8 animate-fade-in" tabindex="-1">
                     <!-- Intro -->
                     <div>
                         <h2 class="text-2xl font-bold text-slate-900 mb-3">구현 툴킷 & 라이브러리</h2>
@@ -406,7 +416,7 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="tech-grid">
                         ${renderTechCards(appData.toolkit)}
                     </div>
-                </div>
+                </section>
             `;
         }
 
@@ -428,10 +438,10 @@
                         <p class="text-sm text-slate-600 mb-4 h-10 overflow-hidden text-ellipsis line-clamp-2">${item.desc}</p>
                         
                         <div class="pt-4 border-t border-slate-100 flex justify-between items-center">
-                            <span class="text-xs font-medium text-slate-400">Method: ${item.link}</span>
-                            <button class="text-sm font-bold text-indigo-600 hover:text-indigo-800 flex items-center gap-1">
+                            <span class="text-xs font-medium text-slate-400">Source: ${item.link}</span>
+                            <a href="${item.url || '#'}" target="_blank" rel="noopener noreferrer" class="text-sm font-bold text-indigo-600 hover:text-indigo-800 flex items-center gap-1">
                                 Docs <span>→</span>
-                            </button>
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -514,9 +524,26 @@
             });
         }
 
+        // Navigation helpers: hash-based routing
+        function navigate(route) {
+            if(!route) return;
+            if(location.hash.replace('#','') !== route) {
+                location.hash = route;
+            } else {
+                router(route);
+            }
+        }
+
+        window.addEventListener('hashchange', () => {
+            const route = location.hash.replace('#','') || 'overview';
+            router(route);
+        });
+
         // Initialize App
         document.addEventListener('DOMContentLoaded', () => {
-            router('overview');
+            const initial = (location.hash.replace('#','') || 'overview');
+            router(initial);
+            if(!location.hash) location.hash = '#overview';
         });
 
     </script>
