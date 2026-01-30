@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>연구 계획: OIDC 및 JWT 기반 무상태 아키텍처</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased selection:bg-indigo-100 selection:text-indigo-900">
+
+    <!-- Chosen Palette: Slate & Indigo - Professional, trustworthy, clean technical feel. -->
+    <!-- Application Structure Plan:
+         1. Sidebar Navigation: Persistent context switching between Key Research Areas (Overview, OIDC Architecture, JWT Technical Analysis, Implementation Guide).
+         2. Dynamic Content Area: 
+            - 'Architecture': Uses HTML-based block diagrams (no SVG) to visualize the data flow.
+            - 'JWT Analysis': Uses Chart.js to visualize server load comparison (Scalability) and interactive cards for technical pros/cons.
+            - 'Toolkit': A filterable grid for the requested tech stacks (PHP, Go, Node, Flutter).
+         3. Rationale: The research plan needs to be convincing. A dashboard format allows stakeholders to 'drill down' into technical justifications (JWT vs Cookie) and immediately see practical solutions (Libraries), facilitating decision-making.
+    -->
+    <!-- Visualization & Content Choices:
+         1. Architecture Flow: Goal -> Explain 'No User Table' concept. Method -> CSS Grid/Flexbox Flowchart with Unicode arrows. Interaction -> Hover effects to highlight data paths. Justification -> Clearer than text, avoids heavy image assets.
+         2. Scalability Chart: Goal -> Prove JWT superiority. Method -> Chart.js Line/Bar chart comparing 'DB Lookups' vs 'CPU Load'. Interaction -> Toggle data sets.
+         3. Tech Stack Grid: Goal -> Provide actionable resources. Method -> JS Filterable Cards. Interaction -> Click filters (PHP, Go, etc.) to refine view.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+    <div id="app" class="flex h-screen overflow-hidden">
+        
+        <!-- Sidebar -->
+        <aside class="w-64 bg-slate-900 text-slate-300 flex flex-col flex-shrink-0 shadow-xl z-20 transition-all duration-300 hidden md:flex">
+            <div class="p-6 border-b border-slate-700">
+                <h1 class="text-xl font-bold text-white tracking-tight">Research<span class="text-indigo-400">Hub</span></h1>
+                <p class="text-xs text-slate-400 mt-1">OIDC & Stateless Auth</p>
+            </div>
+            
+            <nav class="flex-1 overflow-y-auto py-4">
+                <ul class="space-y-1 px-3">
+                    <li>
+                        <button onclick="router('overview')" class="nav-item w-full text-left px-4 py-3 rounded-lg hover:bg-slate-800 hover:text-white transition-colors flex items-center gap-3 group focus:outline-none focus:ring-2 focus:ring-indigo-500" data-target="overview">
+                            <span class="text-lg opacity-70 group-hover:opacity-100">📊</span>
+                            <span class="font-medium">연구 개요</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button onclick="router('architecture')" class="nav-item w-full text-left px-4 py-3 rounded-lg hover:bg-slate-800 hover:text-white transition-colors flex items-center gap-3 group focus:outline-none focus:ring-2 focus:ring-indigo-500" data-target="architecture">
+                            <span class="text-lg opacity-70 group-hover:opacity-100">🏗️</span>
+                            <span class="font-medium">OIDC 아키텍처</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button onclick="router('jwt')" class="nav-item w-full text-left px-4 py-3 rounded-lg hover:bg-slate-800 hover:text-white transition-colors flex items-center gap-3 group focus:outline-none focus:ring-2 focus:ring-indigo-500" data-target="jwt">
+                            <span class="text-lg opacity-70 group-hover:opacity-100">🔐</span>
+                            <span class="font-medium">JWT vs Session</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button onclick="router('implementation')" class="nav-item w-full text-left px-4 py-3 rounded-lg hover:bg-slate-800 hover:text-white transition-colors flex items-center gap-3 group focus:outline-none focus:ring-2 focus:ring-indigo-500" data-target="implementation">
+                            <span class="text-lg opacity-70 group-hover:opacity-100">🛠️</span>
+                            <span class="font-medium">구현 툴킷</span>
+                        </button>
+                    </li>
+                </ul>
+            </nav>
+
+            <div class="p-4 border-t border-slate-700 bg-slate-800/50">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-full bg-indigo-500 flex items-center justify-center text-white font-bold text-xs">PI</div>
+                    <div>
+                        <p class="text-sm font-medium text-white">책임 연구원</p>
+                        <p class="text-xs text-slate-400">프로젝트 리더</p>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Mobile Header -->
+        <div class="md:hidden fixed top-0 left-0 right-0 h-16 bg-slate-900 text-white flex items-center justify-between px-4 z-30 shadow-md">
+            <span class="font-bold">ResearchHub</span>
+            <button onclick="document.querySelector('aside').classList.toggle('hidden'); document.querySelector('aside').classList.toggle('absolute'); document.querySelector('aside').classList.toggle('h-full');" class="p-2">
+                ☰
+            </button>
+        </div>
+
+        <!-- Main Content -->
+        <main class="flex-1 overflow-y-auto bg-slate-50 relative pt-16 md:pt-0">
+            <div id="content-area" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+                <!-- Dynamic Content injected here -->
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Data Store
+        const appData = {
+            overview: {
+                title: "연구 계획 수정: Stateless ID 관리",
+                summary: "본 연구는 전통적인 자체 데이터베이스 기반의 사용자 관리 시스템에서 벗어나, OIDC(OpenID Connect)와 JWT(JSON Web Token)를 활용한 'User Table 없는' 아키텍처로의 전환을 제안합니다.",
+                goals: [
+                    { icon: "🛡️", title: "보안 강화", desc: "개인정보(PII) 저장 최소화 및 중앙화된 인증 위임" },
+                    { icon: "🚀", title: "확장성 확보", desc: "Stateless 아키텍처를 통한 오토스케일링 용이성" },
+                    { icon: "⚡", title: "개발 효율성", desc: "인증 로직 구현 비용 절감 및 표준 프로토콜 준수" }
+                ]
+            },
+            architecture: {
+                benefits: [
+                    { title: "PII 리스크 제로", desc: "비밀번호, 이메일 등 민감 정보를 직접 DB에 저장하지 않아 유출 사고 시 책임 소재가 대폭 감소합니다." },
+                    { title: "글로벌 규정 준수", desc: "GDPR, CCPA 등 복잡한 데이터 주권 및 삭제 요구사항을 IdP(Identity Provider)에 위임할 수 있습니다." },
+                    { title: "통합 관리 (SSO)", desc: "여러 서비스(Microservices) 간에 별도의 회원가입 없이 단일 ID로 접근 제어가 가능합니다." },
+                    { title: "스키마 유연성", desc: "사용자 속성이 변경되어도 DB 마이그레이션 없이 IdP 설정 변경만으로 대응 가능합니다." }
+                ]
+            },
+            jwt: {
+                comparison: [
+                    { feature: "상태 저장 (State)", session: "서버 메모리/DB (Stateful)", jwt: "클라이언트/토큰 자체 (Stateless)" },
+                    { feature: "확장성 (Scalability)", session: "Sticky Session 또는 Redis 필요", jwt: "무한 수평 확장 가능" },
+                    { feature: "모바일 호환성", session: "쿠키 처리 복잡함", jwt: "헤더 기반으로 매우 용이" },
+                    { feature: "보안 모델", session: "CSRF 취약 (쿠키 사용 시)", jwt: "XSS 주의 (저장소 중요), CSRF 안전" }
+                ]
+            },
+            toolkit: [
+                { stack: "PHP", category: "Backend", name: "firebase/php-jwt", desc: "가장 널리 쓰이는 경량 JWT 디코딩 라이브러리. 의존성이 적어 레거시 통합에 유리.", link: "Composer" },
+                { stack: "PHP", category: "Backend", name: "auth0/auth0-php", desc: "OIDC 전체 흐름을 처리하는 강력한 SDK. 로그인 리다이렉트 및 토큰 검증 자동화.", link: "SDK" },
+                { stack: "Go", category: "Backend", name: "golang-jwt/jwt", desc: "Go 생태계 표준. 서명 검증 및 클레임 파싱 성능이 매우 뛰어남.", link: "Module" },
+                { stack: "Go", category: "Backend", name: "coreos/go-oidc", desc: "OIDC Discovery 문서를 통해 퍼블릭 키를 자동 갱신하고 검증하는 로직 내장.", link: "Library" },
+                { stack: "Node (Express)", category: "Backend", name: "express-oauth2-jwt-bearer", desc: "미들웨어 형태로 토큰 검증. 라우트 별 보호가 매우 간편함.", link: "Middleware" },
+                { stack: "Node (React)", category: "Frontend", name: "react-oidc-context", desc: "React Context API 기반. 훅(Hook)을 통해 로그인 상태와 사용자 정보를 전역 관리.", link: "NPM" },
+                { stack: "Node (React)", category: "Frontend", name: "oidc-client-ts", desc: "순수 TypeScript OIDC 클라이언트. 프로토콜 레벨의 세밀한 제어 가능.", link: "NPM" },
+                { stack: "Flutter", category: "Mobile", name: "flutter_appauth", desc: "AppAuth 네이티브 SDK 래퍼. PKCE 흐름을 완벽 지원하여 보안성 최상.", link: "Pub.dev" },
+                { stack: "Flutter", category: "Mobile", name: "dart_jsonwebtoken", desc: "순수 Dart JWT 파서. 서버 없이 로컬에서 토큰 내용을 디코딩하고 만료 시간을 체크.", link: "Pub.dev" }
+            ]
+        };
+
+        let currentChart = null;
+
+        // Router Function
+        function router(route) {
+            // Update Sidebar UI
+            document.querySelectorAll('.nav-item').forEach(el => {
+                if(el.dataset.target === route) {
+                    el.classList.add('bg-slate-800', 'text-white');
+                    el.classList.remove('opacity-70');
+                } else {
+                    el.classList.remove('bg-slate-800', 'text-white');
+                }
+            });
+
+            const contentArea = document.getElementById('content-area');
+            contentArea.innerHTML = ''; // Clear content
+
+            // Inject Content based on Route
+            switch(route) {
+                case 'overview':
+                    renderOverview(contentArea);
+                    break;
+                case 'architecture':
+                    renderArchitecture(contentArea);
+                    break;
+                case 'jwt':
+                    renderJWT(contentArea);
+                    break;
+                case 'implementation':
+                    renderImplementation(contentArea);
+                    break;
+                default:
+                    renderOverview(contentArea);
+            }
+        }
+
+        // --- Render Functions ---
+
+        function renderOverview(container) {
+            const data = appData.overview;
+            
+            container.innerHTML = `
+                <div class="space-y-6 animate-fade-in">
+                    <!-- Intro Header -->
+                    <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-200">
+                        <span class="inline-block px-3 py-1 bg-indigo-100 text-indigo-700 rounded-full text-xs font-semibold mb-4 tracking-wide uppercase">Research Plan V2.0</span>
+                        <h2 class="text-3xl font-bold text-slate-900 mb-4">${data.title}</h2>
+                        <p class="text-lg text-slate-600 leading-relaxed max-w-3xl">${data.summary}</p>
+                    </div>
+
+                    <!-- Key Goals Grid -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        ${data.goals.map(goal => `
+                            <div class="glass-panel p-6 rounded-xl hover:shadow-lg transition-shadow duration-300">
+                                <div class="text-4xl mb-4">${goal.icon}</div>
+                                <h3 class="text-xl font-bold text-slate-800 mb-2">${goal.title}</h3>
+                                <p class="text-slate-600">${goal.desc}</p>
+                            </div>
+                        `).join('')}
+                    </div>
+
+                    <!-- Call to Action / Next Step Context -->
+                    <div class="bg-slate-100 p-6 rounded-xl border-l-4 border-indigo-500">
+                        <h4 class="font-bold text-slate-900 mb-2">연구 방향 수정 핵심</h4>
+                        <p class="text-sm text-slate-700">기존의 '자체 인증 시스템 구축' 계획을 폐기하고, <strong>외부 IdP(Identity Provider)와 연동된 무상태(Stateless) 아키텍처</strong>로 전환합니다. 이를 통해 개발 리소스를 비즈니스 로직에 집중하고 보안 리스크를 외부로 이관합니다.</p>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderArchitecture(container) {
+            const data = appData.architecture;
+            
+            container.innerHTML = `
+                <div class="space-y-8 animate-fade-in">
+                    <!-- Section Intro -->
+                    <div>
+                        <h2 class="text-2xl font-bold text-slate-900 mb-3">OIDC 기반 무상태(Stateless) 아키텍처</h2>
+                        <p class="text-slate-600">사용자 테이블(User Table)을 가지지 않는 구조의 핵심은 <strong>"신뢰(Trust)의 위임"</strong>입니다. 애플리케이션은 사용자가 누구인지 직접 저장하지 않고, 신뢰할 수 있는 발급자(Issuer)가 서명한 토큰을 통해 신원을 확인합니다.</p>
+                    </div>
+
+                    <!-- Flow Diagram (HTML/CSS) -->
+                    <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-200 overflow-x-auto">
+                        <h3 class="text-lg font-bold text-slate-800 mb-6 border-b pb-2">인증 및 데이터 흐름도</h3>
+                        
+                        <div class="flex flex-col md:flex-row items-center justify-between gap-4 min-w-[800px]">
+                            <!-- User -->
+                            <div class="flex flex-col items-center group cursor-pointer">
+                                <div class="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center text-3xl border-2 border-slate-300 group-hover:border-indigo-500 transition-colors">👤</div>
+                                <span class="mt-2 font-bold text-slate-700">사용자 (User)</span>
+                                <span class="text-xs text-slate-500">Login Request</span>
+                            </div>
+
+                            <div class="flex-1 h-px bg-slate-300 relative mx-4">
+                                <div class="absolute -top-3 left-1/2 transform -translate-x-1/2 text-xs text-slate-500 bg-white px-2">1. Redirect</div>
+                                <span class="absolute right-0 -top-1.5 text-slate-300">▶</span>
+                            </div>
+
+                            <!-- IdP -->
+                            <div class="flex flex-col items-center group cursor-pointer">
+                                <div class="w-32 h-16 bg-indigo-50 rounded-lg flex items-center justify-center text-xl border-2 border-indigo-200 group-hover:border-indigo-500 transition-colors">
+                                    🏢 OIDC IdP
+                                </div>
+                                <span class="mt-2 font-bold text-indigo-700">Identity Provider</span>
+                                <span class="text-xs text-slate-500">Google, Auth0, Kakao</span>
+                            </div>
+
+                            <div class="flex-1 h-px bg-slate-300 relative mx-4">
+                                <div class="absolute -top-3 left-1/2 transform -translate-x-1/2 text-xs text-slate-500 bg-white px-2">2. Issue JWT (ID Token)</div>
+                                <span class="absolute right-0 -top-1.5 text-slate-300">▶</span>
+                            </div>
+
+                            <!-- App Server -->
+                            <div class="flex flex-col items-center group cursor-pointer">
+                                <div class="w-32 h-16 bg-green-50 rounded-lg flex items-center justify-center text-xl border-2 border-green-200 group-hover:border-green-500 transition-colors">
+                                    ⚙️ App Server
+                                </div>
+                                <span class="mt-2 font-bold text-green-700">Backend API</span>
+                                <span class="text-xs text-slate-500">Stateless Verification</span>
+                            </div>
+                        </div>
+
+                        <div class="mt-8 bg-yellow-50 p-4 rounded-lg border border-yellow-200 text-sm text-yellow-800 flex items-start gap-3">
+                            <span class="text-xl">💡</span>
+                            <div>
+                                <strong>핵심 포인트:</strong> 백엔드 서버는 DB 조회를 하지 않습니다. 대신 IdP의 공개키(Public Key)를 사용하여 JWT의 서명을 검증합니다. 서명이 유효하다면, 토큰 내부의 사용자 정보(payload)를 신뢰하고 즉시 비즈니스 로직을 수행합니다.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Advantages Grid -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        ${data.benefits.map(item => `
+                            <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100 hover:border-indigo-300 transition-colors">
+                                <h4 class="text-lg font-bold text-indigo-900 mb-2 flex items-center gap-2">
+                                    <span class="w-2 h-2 rounded-full bg-indigo-500"></span>
+                                    ${item.title}
+                                </h4>
+                                <p class="text-slate-600 text-sm leading-relaxed">${item.desc}</p>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderJWT(container) {
+            container.innerHTML = `
+                <div class="space-y-8 animate-fade-in">
+                    <!-- Intro -->
+                    <div>
+                        <h2 class="text-2xl font-bold text-slate-900 mb-3">기술적 제안: 왜 JWT인가?</h2>
+                        <p class="text-slate-600">연구 계획에서 세션/쿠키 방식 대신 JWT를 채택해야 하는 기술적 근거를 정리합니다. 현대적인 마이크로서비스 및 모바일 환경에서 JWT는 필수적입니다.</p>
+                    </div>
+
+                    <!-- Comparison & Chart Section -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        
+                        <!-- Comparison Table -->
+                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                            <h3 class="text-lg font-bold text-slate-800 mb-4">JWT vs Session 비교</h3>
+                            <div class="overflow-hidden rounded-lg border border-slate-200">
+                                <table class="min-w-full text-sm text-left">
+                                    <thead class="bg-slate-50 text-slate-700 font-semibold">
+                                        <tr>
+                                            <th class="px-4 py-3">구분</th>
+                                            <th class="px-4 py-3 text-red-600">Session/Cookie</th>
+                                            <th class="px-4 py-3 text-green-600">JWT (OIDC)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-slate-100">
+                                        ${appData.jwt.comparison.map(row => `
+                                            <tr class="hover:bg-slate-50 transition-colors">
+                                                <td class="px-4 py-3 font-medium text-slate-900">${row.feature}</td>
+                                                <td class="px-4 py-3 text-slate-500">${row.session}</td>
+                                                <td class="px-4 py-3 text-slate-700 bg-green-50/50 font-medium">${row.jwt}</td>
+                                            </tr>
+                                        `).join('')}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Chart Container -->
+                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col">
+                            <h3 class="text-lg font-bold text-slate-800 mb-2">확장성 시뮬레이션 (Scalability)</h3>
+                            <p class="text-xs text-slate-500 mb-4">동시 접속자 증가에 따른 서버 부하 비교</p>
+                            
+                            <div class="flex-grow flex items-center justify-center w-full">
+                                <div class="chart-container">
+                                    <canvas id="scalabilityChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Technical Deep Dive Cards -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="bg-indigo-50 p-6 rounded-xl border border-indigo-100">
+                            <h4 class="font-bold text-indigo-900 mb-2">Stateless의 진정한 의미</h4>
+                            <p class="text-sm text-indigo-800">서버가 클라이언트의 상태를 기억하지 않습니다. 요청 하나하나가 완전해야 하므로, 서버를 1대에서 100대로 늘려도 별도의 세션 동기화 작업이 전혀 필요 없습니다 (Zero Devops Overhead).</p>
+                        </div>
+                        <div class="bg-slate-50 p-6 rounded-xl border border-slate-200">
+                            <h4 class="font-bold text-slate-900 mb-2">크로스 도메인 이슈 해결</h4>
+                            <p class="text-sm text-slate-600">쿠키는 도메인 정책(SameSite, CORS)에 매우 민감합니다. JWT는 HTTP Header(Authorization)에 실려 전송되므로, API 서버와 프론트엔드 서버의 도메인이 달라도 처리가 간편합니다.</p>
+                        </div>
+                        <div class="bg-slate-50 p-6 rounded-xl border border-slate-200">
+                            <h4 class="font-bold text-slate-900 mb-2">모바일 네이티브 앱 통합</h4>
+                            <p class="text-sm text-slate-600">웹뷰가 아닌 네이티브 앱 통신에서는 쿠키 관리가 까다롭습니다. JWT는 단순 문자열로 저장 및 전송이 가능하여 Flutter, iOS, Android 등 모든 클라이언트에서 동일한 로직을 사용합니다.</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // Initialize Chart after DOM is ready
+            setTimeout(initChart, 0);
+        }
+
+        function renderImplementation(container) {
+            container.innerHTML = `
+                <div class="space-y-8 animate-fade-in">
+                    <!-- Intro -->
+                    <div>
+                        <h2 class="text-2xl font-bold text-slate-900 mb-3">구현 툴킷 & 라이브러리</h2>
+                        <p class="text-slate-600">연구팀이 즉시 도입 가능한 플랫폼별 검증된 라이브러리와 방법론입니다. 각 라이브러리는 OIDC/JWT 표준을 준수합니다.</p>
+                    </div>
+
+                    <!-- Filters -->
+                    <div class="flex flex-wrap gap-2" id="tech-filters">
+                        <button onclick="filterTech('All')" class="px-4 py-2 rounded-full text-sm font-medium bg-slate-800 text-white shadow-md transition-all hover:bg-slate-700">All</button>
+                        <button onclick="filterTech('PHP')" class="px-4 py-2 rounded-full text-sm font-medium bg-white text-slate-600 border border-slate-200 hover:border-indigo-500 hover:text-indigo-600 transition-all">PHP</button>
+                        <button onclick="filterTech('Go')" class="px-4 py-2 rounded-full text-sm font-medium bg-white text-slate-600 border border-slate-200 hover:border-indigo-500 hover:text-indigo-600 transition-all">Go</button>
+                        <button onclick="filterTech('Node')" class="px-4 py-2 rounded-full text-sm font-medium bg-white text-slate-600 border border-slate-200 hover:border-indigo-500 hover:text-indigo-600 transition-all">Node (JS/TS)</button>
+                        <button onclick="filterTech('Flutter')" class="px-4 py-2 rounded-full text-sm font-medium bg-white text-slate-600 border border-slate-200 hover:border-indigo-500 hover:text-indigo-600 transition-all">Flutter</button>
+                    </div>
+
+                    <!-- Grid -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="tech-grid">
+                        ${renderTechCards(appData.toolkit)}
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderTechCards(items) {
+            if(items.length === 0) return '<p class="text-slate-500 col-span-3 text-center py-8">해당하는 항목이 없습니다.</p>';
+            
+            return items.map(item => `
+                <div class="bg-white p-6 rounded-xl border border-slate-200 hover:shadow-md transition-all group relative overflow-hidden">
+                    <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                        <span class="text-6xl font-black text-slate-900">${item.stack.split(' ')[0]}</span>
+                    </div>
+                    
+                    <div class="relative z-10">
+                        <div class="flex items-center gap-2 mb-3">
+                            <span class="px-2 py-1 text-xs font-bold rounded bg-slate-100 text-slate-600 uppercase">${item.stack}</span>
+                            <span class="px-2 py-1 text-xs font-bold rounded bg-indigo-50 text-indigo-600 uppercase">${item.category}</span>
+                        </div>
+                        <h3 class="text-lg font-bold text-slate-900 mb-2">${item.name}</h3>
+                        <p class="text-sm text-slate-600 mb-4 h-10 overflow-hidden text-ellipsis line-clamp-2">${item.desc}</p>
+                        
+                        <div class="pt-4 border-t border-slate-100 flex justify-between items-center">
+                            <span class="text-xs font-medium text-slate-400">Method: ${item.link}</span>
+                            <button class="text-sm font-bold text-indigo-600 hover:text-indigo-800 flex items-center gap-1">
+                                Docs <span>→</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function filterTech(category) {
+            // Update Active Filter Style
+            const buttons = document.querySelectorAll('#tech-filters button');
+            buttons.forEach(btn => {
+                if(btn.textContent.includes(category) || (category === 'All' && btn.textContent === 'All')) {
+                    btn.classList.add('bg-slate-800', 'text-white', 'shadow-md');
+                    btn.classList.remove('bg-white', 'text-slate-600', 'border-slate-200');
+                } else {
+                    btn.classList.remove('bg-slate-800', 'text-white', 'shadow-md');
+                    btn.classList.add('bg-white', 'text-slate-600', 'border-slate-200');
+                }
+            });
+
+            // Filter Data
+            const grid = document.getElementById('tech-grid');
+            let filtered = appData.toolkit;
+            
+            if(category !== 'All') {
+                filtered = appData.toolkit.filter(item => item.stack.includes(category));
+            }
+            
+            grid.innerHTML = renderTechCards(filtered);
+        }
+
+        function initChart() {
+            const ctx = document.getElementById('scalabilityChart');
+            if(!ctx) return;
+
+            if (currentChart) {
+                currentChart.destroy();
+            }
+
+            // Data simulation: Session hits DB exponentially, JWT stays flat
+            currentChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['1k Users', '10k Users', '50k Users', '100k Users', '500k Users'],
+                    datasets: [
+                        {
+                            label: 'Session (DB I/O Load)',
+                            data: [10, 80, 450, 950, 4800],
+                            borderColor: '#ef4444', // Red
+                            backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                            tension: 0.4,
+                            fill: true
+                        },
+                        {
+                            label: 'JWT (CPU Verify Load)',
+                            data: [5, 15, 25, 35, 55],
+                            borderColor: '#22c55e', // Green
+                            backgroundColor: 'rgba(34, 197, 94, 0.1)',
+                            tension: 0.4,
+                            fill: true
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom' },
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false,
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: { display: true, text: 'Relative Resource Cost' }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Initialize App
+        document.addEventListener('DOMContentLoaded', () => {
+            router('overview');
+        });
+
+    </script>
+</body>
+</html>
