@@ -208,7 +208,7 @@
         const appData = {
             overview: {
                 title: "Stateless ID 관리",
-                summary: "본 보고서는 개별 서비스가 직접 사용자 관리하는 시스템에서 벗어나, OIDC(OpenID Connect)와 JWT(JSON Web Token)를 활용한 'User Table 없는' 아키텍처로의 전환을 제안합니다.",
+                summary: "본 보고서는 개별 서비스가 직접 사용자 관리하는 시스템에서 벗어나, OIDC(OpenID Connect)와 JWT(JSON Web Token)를 활용한 '개별 시스템은 User Table 없는' 아키텍처로의 전환을 제안하고, 그에 따른 구현 방안과 레퍼런스로 참조할 스펙 문서 및 바로 활용가능한 툴킷들을 정리한 문서입니다.",
                 goals: [
                     { icon: "🛡️", title: "보안 강화", desc: "개인정보(PII) 저장 최소 - 중앙화된 인증 위임" },
                     { icon: "🚀", title: "확장성 확보", desc: "Stateless 아키텍처 - 스케일링 용이성" },
@@ -350,9 +350,24 @@
                     </div>
 
                     <!-- Call to Action / Next Step Context -->
-                    <div class="bg-slate-100 p-6 rounded-xl border-l-4 border-indigo-500">
-                        <h4 class="font-bold text-slate-900 mb-2">시스템 개선 방향 핵심</h4>
-                        <p class="text-sm text-slate-700">기존의 '개별 시스템 인증 시스템'을 폐기하고, <strong>바론 통합로그인(Identity Provider)와 연동된 무상태(Stateless) 아키텍처</strong>로 전환합니다. 이를 통해 개발 리소스를 비즈니스 로직에 집중하고 보안 리스크를 관리합니다.</p>
+                    <div class="bg-gradient-to-r from-slate-900 to-indigo-900 p-8 rounded-2xl shadow-lg border border-indigo-700/50 relative overflow-hidden group">
+                         <!-- Background effects -->
+                        <div class="absolute top-0 right-0 p-8 opacity-5 text-white text-8xl font-black pointer-events-none transform translate-x-10 -translate-y-10 group-hover:scale-110 transition-transform duration-700">🚀</div>
+                        <div class="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
+                        
+                        <div class="relative z-10">
+                            <h4 class="text-indigo-300 font-bold mb-3 uppercase tracking-wider text-sm flex items-center gap-2">
+                                <span class="w-8 h-0.5 bg-indigo-500 inline-block"></span>
+                                시스템 개선 방향 (Core Mission)
+                            </h4>
+                            <p class="text-xl md:text-2xl text-white font-bold leading-relaxed mb-4">
+                                기존의 '<span class="text-slate-400 decoration-slate-500">개별 시스템 인증</span>'을 폐기하고,<br>
+                                <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-200 to-white">바론 통합로그인(IdP) 기반 무상태(Stateless) 아키텍처</span>로 전환합니다.
+                            </p>
+                            <p class="text-indigo-200/80 text-sm md:text-base border-t border-indigo-800/50 pt-4 mt-2">
+                                이를 통해 개발 리소스를 <strong>비즈니스 로직에 집중</strong>하고, 보안 리스크를 전문 시스템에 <strong> 위임</strong>합니다.
+                            </p>
+                        </div>
                     </div>
                 </section>
             `;
