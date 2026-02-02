@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,21 +12,26 @@
         ::-webkit-scrollbar {
             width: 8px;
         }
+
         ::-webkit-scrollbar-track {
             background: #f1f5f9;
         }
+
         ::-webkit-scrollbar-thumb {
             background: #cbd5e1;
             border-radius: 4px;
         }
+
         ::-webkit-scrollbar-thumb:hover {
             background: #94a3b8;
         }
+
         .glass-panel {
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
             border: 1px solid rgba(226, 232, 240, 0.8);
         }
+
         .chart-container {
             position: relative;
             width: 100%;
@@ -35,15 +41,25 @@
             height: 300px;
             max-height: 400px;
         }
+
         @media (min-width: 768px) {
             .chart-container {
                 height: 350px;
             }
         }
-        html { scroll-behavior: smooth; }
-        .content-section { scroll-margin-top: 6rem; } /* account for fixed header on small screens */
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        .content-section {
+            scroll-margin-top: 6rem;
+        }
+
+        /* account for fixed header on small screens */
     </style>
 </head>
+
 <body class="bg-slate-50 text-slate-800 font-sans antialiased selection:bg-indigo-100 selection:text-indigo-900">
 
     <!-- Chosen Palette: Slate & Indigo - Professional, trustworthy, clean technical feel. -->
@@ -63,36 +79,46 @@
     <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
 
     <div id="app" class="flex h-screen overflow-hidden">
-        
+
         <!-- Sidebar -->
-        <aside class="w-64 bg-slate-900 text-slate-300 flex flex-col flex-shrink-0 shadow-xl z-20 transition-all duration-300 hidden md:flex">
+        <aside
+            class="w-64 bg-slate-900 text-slate-300 flex flex-col flex-shrink-0 shadow-xl z-20 transition-all duration-300 hidden md:flex">
             <div class="p-6 border-b border-slate-700">
-                <h1 class="text-xl font-bold text-white tracking-tight">Baron<span class="text-indigo-400">기술기획</span></h1>
+                <h1 class="text-xl font-bold text-white tracking-tight">Baron<span class="text-indigo-400">기술기획</span>
+                </h1>
                 <p class="text-xs text-slate-400 mt-1">OIDC & Stateless Auth</p>
             </div>
-            
+
             <nav class="flex-1 overflow-y-auto py-4">
                 <ul class="space-y-1 px-3">
                     <li>
-                        <button onclick="navigate('overview')" class="nav-item w-full text-left px-4 py-3 rounded-lg hover:bg-slate-800 hover:text-white transition-colors flex items-center gap-3 group focus:outline-none focus:ring-2 focus:ring-indigo-500" data-target="overview">
+                        <button onclick="navigate('overview')"
+                            class="nav-item w-full text-left px-4 py-3 rounded-lg hover:bg-slate-800 hover:text-white transition-colors flex items-center gap-3 group focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                            data-target="overview">
                             <span class="text-lg opacity-70 group-hover:opacity-100">📊</span>
                             <span class="font-medium">보고서 개요</span>
                         </button>
                     </li>
                     <li>
-                        <button onclick="navigate('architecture')" class="nav-item w-full text-left px-4 py-3 rounded-lg hover:bg-slate-800 hover:text-white transition-colors flex items-center gap-3 group focus:outline-none focus:ring-2 focus:ring-indigo-500" data-target="architecture">
+                        <button onclick="navigate('architecture')"
+                            class="nav-item w-full text-left px-4 py-3 rounded-lg hover:bg-slate-800 hover:text-white transition-colors flex items-center gap-3 group focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                            data-target="architecture">
                             <span class="text-lg opacity-70 group-hover:opacity-100">🏗️</span>
                             <span class="font-medium">OIDC 아키텍처</span>
                         </button>
                     </li>
                     <li>
-                        <button onclick="navigate('jwt')" class="nav-item w-full text-left px-4 py-3 rounded-lg hover:bg-slate-800 hover:text-white transition-colors flex items-center gap-3 group focus:outline-none focus:ring-2 focus:ring-indigo-500" data-target="jwt">
+                        <button onclick="navigate('jwt')"
+                            class="nav-item w-full text-left px-4 py-3 rounded-lg hover:bg-slate-800 hover:text-white transition-colors flex items-center gap-3 group focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                            data-target="jwt">
                             <span class="text-lg opacity-70 group-hover:opacity-100">🔐</span>
                             <span class="font-medium">JWT vs Session</span>
                         </button>
                     </li>
                     <li>
-                        <button onclick="navigate('implementation')" class="nav-item w-full text-left px-4 py-3 rounded-lg hover:bg-slate-800 hover:text-white transition-colors flex items-center gap-3 group focus:outline-none focus:ring-2 focus:ring-indigo-500" data-target="implementation">
+                        <button onclick="navigate('implementation')"
+                            class="nav-item w-full text-left px-4 py-3 rounded-lg hover:bg-slate-800 hover:text-white transition-colors flex items-center gap-3 group focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                            data-target="implementation">
                             <span class="text-lg opacity-70 group-hover:opacity-100">🛠️</span>
                             <span class="font-medium">구현 툴킷</span>
                         </button>
@@ -102,7 +128,9 @@
 
             <div class="p-4 border-t border-slate-700 bg-slate-800/50">
                 <div class="flex items-center gap-3">
-                    <div class="w-8 h-8 rounded-full bg-indigo-500 flex items-center justify-center text-white font-bold text-xs">BR</div>
+                    <div
+                        class="w-8 h-8 rounded-full bg-indigo-500 flex items-center justify-center text-white font-bold text-xs">
+                        BR</div>
                     <div>
                         <p class="text-sm font-medium text-white">기술 개발팀</p>
                         <p class="text-xs text-slate-400">총괄기획실</p>
@@ -112,9 +140,12 @@
         </aside>
 
         <!-- Mobile Header -->
-        <div class="md:hidden fixed top-0 left-0 right-0 h-16 bg-slate-900 text-white flex items-center justify-between px-4 z-30 shadow-md">
+        <div
+            class="md:hidden fixed top-0 left-0 right-0 h-16 bg-slate-900 text-white flex items-center justify-between px-4 z-30 shadow-md">
             <span class="font-bold">ResearchHub</span>
-            <button onclick="document.querySelector('aside').classList.toggle('hidden'); document.querySelector('aside').classList.toggle('absolute'); document.querySelector('aside').classList.toggle('h-full');" class="p-2">
+            <button
+                onclick="document.querySelector('aside').classList.toggle('hidden'); document.querySelector('aside').classList.toggle('absolute'); document.querySelector('aside').classList.toggle('h-full');"
+                class="p-2">
                 ☰
             </button>
         </div>
@@ -158,13 +189,13 @@
             toolkit: [
                 { stack: "PHP", category: "Backend", name: "firebase/php-jwt", desc: "가장 널리 쓰이는 경량 JWT 디코딩 라이브러리. 의존성이 적어 레거시 통합에 유리.", link: "GitHub / Packagist", url: "https://github.com/firebase/php-jwt" },
                 { stack: "PHP", category: "Backend", name: "auth0/auth0-php", desc: "OIDC 전체 흐름을 처리하는 강력한 SDK. 로그인 리다이렉트 및 토큰 검증 자동화.", link: "GitHub / Packagist", url: "https://github.com/auth0/auth0-PHP" },
-                { stack: "Go", category: "Backend", name: "golang-jwt/jwt", desc: "Go 생태계 표준. 서명 검증 및 클레임 파싱 성능이 매우 뛰어남.", link: "GitHub / Go Module", url: "https://github.com/golang-jwt/jwt" },
                 { stack: "Go", category: "Backend", name: "coreos/go-oidc", desc: "OIDC Discovery 문서를 통해 퍼블릭 키를 자동 갱신하고 검증하는 로직 내장.", link: "GitHub / Module", url: "https://github.com/coreos/go-oidc" },
                 { stack: "Node (Express)", category: "Backend", name: "@auth0/express-oauth2-jwt-bearer", desc: "미들웨어 형태로 토큰 검증. 라우트 별 보호가 매우 간편함.", link: "NPM", url: "https://www.npmjs.com/package/@auth0/express-oauth2-jwt-bearer" },
                 { stack: "Node (React)", category: "Frontend", name: "react-oidc-context", desc: "React Context API 기반. 훅(Hook)을 통해 로그인 상태와 사용자 정보를 전역 관리.", link: "NPM", url: "https://www.npmjs.com/package/react-oidc-context" },
-                { stack: "Node (React)", category: "Frontend", name: "oidc-client-ts", desc: "순수 TypeScript OIDC 클라이언트. 프로토콜 레벨의 세밀한 제어 가능.", link: "NPM", url: "https://www.npmjs.com/package/oidc-client-ts" },
                 { stack: "Flutter", category: "Mobile", name: "flutter_appauth", desc: "AppAuth 네이티브 SDK 래퍼. PKCE 흐름을 완벽 지원하여 보안성 최상.", link: "Pub.dev", url: "https://pub.dev/packages/flutter_appauth" },
-                { stack: "Flutter", category: "Mobile", name: "dart_jsonwebtoken", desc: "순수 Dart JWT 파서. 서버 없이 로컬에서 토큰 내용을 디코딩하고 만료 시간을 체크.", link: "Pub.dev", url: "https://pub.dev/packages/dart_jsonwebtoken" }
+                { stack: "C# .NET (WPF)", category: "Desktop", name: "IdentityModel.OidcClient", desc: "네이티브 앱을 위한 인증 라이브러리. WPF/WinForms 등의 데스크톱 앱에서 PCKE 흐름 지원.", link: "GitHub", url: "https://github.com/IdentityModel/IdentityModel.OidcClient" },
+                { stack: "C# .NET (MAUI)", category: "Mobile/Desktop", name: "Microsoft.Identity.Client", desc: "MSAL for .NET. 안드로이드, iOS, 윈도우 등 멀티플랫폼 인증을 단일 코드로 처리 가능.", link: "NuGet", url: "https://www.nuget.org/packages/Microsoft.Identity.Client" },
+                { stack: "C# .NET (Blazor)", category: "Frontend", name: "WebAssembly.Authentication", desc: "Blazor WASM을 위한 내장 인증 라이브러리. ASP.NET Core Identity 및 OIDC와 매끄럽게 통합.", link: "MS Docs", url: "https://learn.microsoft.com/en-us/aspnet/core/blazor/security/webassembly/" }
             ]
         };
 
@@ -174,7 +205,7 @@
         function router(route) {
             // Update Sidebar UI
             document.querySelectorAll('.nav-item').forEach(el => {
-                if(el.dataset.target === route) {
+                if (el.dataset.target === route) {
                     el.classList.add('bg-slate-800', 'text-white');
                     el.classList.remove('opacity-70');
                 } else {
@@ -186,7 +217,7 @@
             contentArea.innerHTML = ''; // Clear content
 
             // Inject Content based on Route
-            switch(route) {
+            switch (route) {
                 case 'overview':
                     renderOverview(contentArea);
                     break;
@@ -206,10 +237,10 @@
             // After rendering, scroll to and focus the section for direct linking
             setTimeout(() => {
                 const section = document.getElementById(route);
-                if(section) {
-                    section.setAttribute('tabindex','-1');
-                    section.focus({preventScroll:true});
-                    section.scrollIntoView({behavior:'smooth', block:'start'});
+                if (section) {
+                    section.setAttribute('tabindex', '-1');
+                    section.focus({ preventScroll: true });
+                    section.scrollIntoView({ behavior: 'smooth', block: 'start' });
                 }
             }, 60);
         }
@@ -218,7 +249,7 @@
 
         function renderOverview(container) {
             const data = appData.overview;
-            
+
             container.innerHTML = `
                 <section id="overview" class="content-section space-y-6 animate-fade-in" tabindex="-1">
                     <!-- Intro Header -->
@@ -250,7 +281,7 @@
 
         function renderArchitecture(container) {
             const data = appData.architecture;
-            
+
             container.innerHTML = `
                 <section id="architecture" class="content-section space-y-8 animate-fade-in" tabindex="-1">
                     <!-- Section Intro -->
@@ -410,6 +441,7 @@
                         <button onclick="filterTech('Go')" class="px-4 py-2 rounded-full text-sm font-medium bg-white text-slate-600 border border-slate-200 hover:border-indigo-500 hover:text-indigo-600 transition-all">Go</button>
                         <button onclick="filterTech('Node')" class="px-4 py-2 rounded-full text-sm font-medium bg-white text-slate-600 border border-slate-200 hover:border-indigo-500 hover:text-indigo-600 transition-all">Node (JS/TS)</button>
                         <button onclick="filterTech('Flutter')" class="px-4 py-2 rounded-full text-sm font-medium bg-white text-slate-600 border border-slate-200 hover:border-indigo-500 hover:text-indigo-600 transition-all">Flutter</button>
+                        <button onclick="filterTech('C# .NET')" class="px-4 py-2 rounded-full text-sm font-medium bg-white text-slate-600 border border-slate-200 hover:border-indigo-500 hover:text-indigo-600 transition-all">C# .NET</button>
                     </div>
 
                     <!-- Grid -->
@@ -421,8 +453,8 @@
         }
 
         function renderTechCards(items) {
-            if(items.length === 0) return '<p class="text-slate-500 col-span-3 text-center py-8">해당하는 항목이 없습니다.</p>';
-            
+            if (items.length === 0) return '<p class="text-slate-500 col-span-3 text-center py-8">해당하는 항목이 없습니다.</p>';
+
             return items.map(item => `
                 <div class="bg-white p-6 rounded-xl border border-slate-200 hover:shadow-md transition-all group relative overflow-hidden">
                     <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
@@ -452,7 +484,7 @@
             // Update Active Filter Style
             const buttons = document.querySelectorAll('#tech-filters button');
             buttons.forEach(btn => {
-                if(btn.textContent.includes(category) || (category === 'All' && btn.textContent === 'All')) {
+                if (btn.textContent.includes(category) || (category === 'All' && btn.textContent === 'All')) {
                     btn.classList.add('bg-slate-800', 'text-white', 'shadow-md');
                     btn.classList.remove('bg-white', 'text-slate-600', 'border-slate-200');
                 } else {
@@ -464,17 +496,17 @@
             // Filter Data
             const grid = document.getElementById('tech-grid');
             let filtered = appData.toolkit;
-            
-            if(category !== 'All') {
+
+            if (category !== 'All') {
                 filtered = appData.toolkit.filter(item => item.stack.includes(category));
             }
-            
+
             grid.innerHTML = renderTechCards(filtered);
         }
 
         function initChart() {
             const ctx = document.getElementById('scalabilityChart');
-            if(!ctx) return;
+            if (!ctx) return;
 
             if (currentChart) {
                 currentChart.destroy();
@@ -526,8 +558,8 @@
 
         // Navigation helpers: hash-based routing
         function navigate(route) {
-            if(!route) return;
-            if(location.hash.replace('#','') !== route) {
+            if (!route) return;
+            if (location.hash.replace('#', '') !== route) {
                 location.hash = route;
             } else {
                 router(route);
@@ -535,17 +567,18 @@
         }
 
         window.addEventListener('hashchange', () => {
-            const route = location.hash.replace('#','') || 'overview';
+            const route = location.hash.replace('#', '') || 'overview';
             router(route);
         });
 
         // Initialize App
         document.addEventListener('DOMContentLoaded', () => {
-            const initial = (location.hash.replace('#','') || 'overview');
+            const initial = (location.hash.replace('#', '') || 'overview');
             router(initial);
-            if(!location.hash) location.hash = '#overview';
+            if (!location.hash) location.hash = '#overview';
         });
 
     </script>
 </body>
+
 </html>
