@@ -217,7 +217,7 @@
             },
             architecture: {
                 benefits: [
-                    { title: "PII 리스크", desc: "비밀번호, 이메일 등 민감 정보를 직접 DB에 저장하지 않아 유출 사고 시 책임 소재가 대폭 감소합니다." },
+                    { title: "PII 리스크", desc: "비밀번호, 이메일 등 민감 정보를 개별 서비스마다 반복해 저장하지 않아 유출 사고 시 책임 소재가 대폭 감소합니다." },
                     { title: "글로벌 규정 준수", desc: "GDPR, CCPA 등 복잡한 데이터 주권 및 삭제 요구사항을 IdP(Identity Provider)에 위임할 수 있습니다." },
                     { title: "통합 관리 (SSO)", desc: "여러 서비스간에 별도의 회원가입 없이 단일 ID로 접근 제어가 가능합니다." },
                     { title: "스키마 유연성", desc: "사용자 속성이 변경되어도 DB 마이그레이션 없이 IdP 변경만으로 대응 가능합니다." }
@@ -369,49 +369,136 @@
                         <p class="text-slate-600">사용자 테이블(User Table)을 가지지 않는 구조의 핵심은 <strong>"신뢰(Trust)의 위임"</strong>입니다. 애플리케이션은 사용자가 누구인지 직접 저장하지 않고, 신뢰할 수 있는 발급자(Issuer)가 서명한 토큰을 통해 신원을 확인합니다.</p>
                     </div>
 
-                    <!-- Flow Diagram (HTML/CSS) -->
-                    <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-200 overflow-x-auto">
-                        <h3 class="text-lg font-bold text-slate-800 mb-6 border-b pb-2">인증 및 데이터 흐름도</h3>
+                    <!-- Main Flow Card -->
+                    <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-200 overflow-hidden relative">
+                        <!-- Header with Expand Button -->
+                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 border-b pb-2 gap-4">
+                            <h3 class="text-lg font-bold text-slate-800">인증 및 데이터 흐름도</h3>
+                            <button onclick="toggleArchDetails()" id="arch-toggle-btn" class="inline-flex items-center gap-2 px-4 py-1.5 bg-indigo-50 text-indigo-600 font-bold border border-indigo-200 rounded-full hover:bg-indigo-100 transition-all text-xs shadow-sm">
+                                <span>🔍 상세 시퀀스 다이어그램 보기 (Expand)</span>
+                            </button>
+                        </div>
                         
-                        <div class="flex flex-col md:flex-row items-center justify-between gap-4 min-w-[800px]">
-                            <!-- User -->
-                            <div class="flex flex-col items-center group cursor-pointer">
-                                <div class="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center text-3xl border-2 border-slate-300 group-hover:border-indigo-500 transition-colors">👤</div>
-                                <span class="mt-2 font-bold text-slate-700">사용자 (User)</span>
-                                <span class="text-xs text-slate-500">Login Request</span>
-                            </div>
-
-                            <div class="flex-1 h-px bg-slate-300 relative mx-4">
-                                <div class="absolute -top-3 left-1/2 transform -translate-x-1/2 text-xs text-slate-500 bg-white px-2">1. Redirect</div>
-                            </div>
-
-                            <!-- IdP -->
-                            <div class="flex flex-col items-center group cursor-pointer">
-                                <div class="w-32 h-16 bg-indigo-50 rounded-lg flex items-center justify-center text-xl border-2 border-indigo-200 group-hover:border-indigo-500 transition-colors">
-                                    🏢 OIDC IdP
+                        <!-- Simple Flow Diagram (Always Visible) -->
+                        <div class="overflow-x-auto pb-6">
+                            <div class="flex flex-col md:flex-row items-center justify-between gap-4 min-w-[800px]">
+                                <!-- User -->
+                                <div class="flex flex-col items-center group cursor-pointer">
+                                    <div class="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center text-3xl border-2 border-slate-300 group-hover:border-indigo-500 transition-colors">👤</div>
+                                    <span class="mt-2 font-bold text-slate-700">사용자 (User)</span>
                                 </div>
-                                <span class="mt-2 font-bold text-indigo-700">바론 통합로그인</span>
-                                <span class="text-xs text-slate-500">Identity Provider</span>
-                            </div>
 
-                            <div class="flex-1 h-px bg-slate-300 relative mx-4">
-                                <div class="absolute -top-3 left-1/2 transform -translate-x-1/2 text-xs text-slate-500 bg-white px-2">2. Issue JWT (ID Token)</div>
-                            </div>
-
-                            <!-- App Server -->
-                            <div class="flex flex-col items-center group cursor-pointer">
-                                <div class="w-32 h-16 bg-green-50 rounded-lg flex items-center justify-center text-xl border-2 border-green-200 group-hover:border-green-500 transition-colors">
-                                    개별 서비스
+                                <div class="flex-1 h-px bg-slate-300 relative mx-4">
+                                    <div class="absolute -top-3 left-1/2 transform -translate-x-1/2 text-xs text-slate-500 bg-white px-2">1. Redirect</div>
                                 </div>
-                                <span class="mt-2 font-bold text-green-700">Backend API</span>
-                                <span class="text-xs text-slate-500">Stateless Verification</span>
+
+                                <!-- IdP -->
+                                <div class="flex flex-col items-center group cursor-pointer">
+                                    <div class="w-32 h-16 bg-indigo-50 rounded-lg flex items-center justify-center text-xl border-2 border-indigo-200 group-hover:border-indigo-500 transition-colors">🏢 OIDC IdP</div>
+                                    <span class="mt-2 font-bold text-indigo-700">바론 통합로그인</span>
+                                </div>
+
+                                <div class="flex-1 h-px bg-slate-300 relative mx-4">
+                                    <div class="absolute -top-3 left-1/2 transform -translate-x-1/2 text-xs text-slate-500 bg-white px-2">2. Issue JWT</div>
+                                </div>
+
+                                <!-- App Server -->
+                                <div class="flex flex-col items-center group cursor-pointer">
+                                    <div class="w-32 h-16 bg-green-50 rounded-lg flex items-center justify-center text-xl border-2 border-green-200 group-hover:border-green-500 transition-colors">개별 서비스</div>
+                                    <span class="mt-2 font-bold text-green-700">Backend API</span>
+                                </div>
                             </div>
                         </div>
 
-                        <div class="mt-8 bg-yellow-50 p-4 rounded-lg border border-yellow-200 text-sm text-yellow-800 flex items-start gap-3">
-                            <span class="text-xl">💡</span>
-                            <div>
-                                <strong>핵심 포인트:</strong> 백엔드 서버는 DB 조회를 하지 않습니다. 대신 IdP의 공개키(Public Key)를 사용하여 JWT의 서명을 검증합니다. 서명이 유효하다면, 토큰 내부의 사용자 정보(payload)를 신뢰하고 즉시 비즈니스 로직을 수행합니다.
+                        <!-- Detailed Sequence Diagram (Hidden by default) -->
+                        <div id="detailed-architecture-flow" class="hidden mt-6 bg-slate-50 rounded-xl border border-slate-200 overflow-x-auto">
+                            <div class="min-w-[700px] relative font-mono text-sm p-6">
+                                <!-- Grid Layout -->
+                                <div class="grid grid-cols-3 gap-4 text-center mb-4 font-bold text-slate-700">
+                                    <div>사용자 (User)</div>
+                                    <div>서비스 (RP)</div>
+                                    <div>통합로그인 (IdP)</div>
+                                </div>
+
+                                <!-- Lifelines -->
+                                <div class="absolute top-8 bottom-0 left-[16.66%] w-px border-l-2 border-dashed border-slate-300"></div>
+                                <div class="absolute top-8 bottom-0 left-[50%] w-px border-l-2 border-dashed border-slate-300"></div>
+                                <div class="absolute top-8 bottom-0 left-[83.33%] w-px border-l-2 border-dashed border-slate-300"></div>
+
+                                <!-- Sequence Steps -->
+                                <div class="space-y-8 relative pt-4">
+                                    <!-- Step 1 -->
+                                    <div class="grid grid-cols-3 gap-4 items-center relative">
+                                        <div class="col-span-2 relative h-8">
+                                            <div class="absolute top-1/2 left-[25%] right-[0%] h-0.5 bg-slate-400"></div>
+                                            <div class="absolute top-1/2 right-[0%] w-0 h-0 border-t-4 border-b-4 border-l-8 border-t-transparent border-b-transparent border-l-slate-600 transform -translate-y-[4px]"></div>
+                                            <span class="absolute top-[-10px] left-1/2 transform -translate-x-1/2 bg-slate-50 px-2 text-xs font-bold text-slate-600">1. 접근 (Access)</span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Step 2 -->
+                                    <div class="grid grid-cols-3 gap-4 items-center relative">
+                                        <div class="col-span-2 col-start-2 relative h-8">
+                                            <div class="absolute top-1/2 left-[0%] right-[0%] h-0.5 bg-indigo-400"></div>
+                                            <div class="absolute top-1/2 right-[0%] w-0 h-0 border-t-4 border-b-4 border-l-8 border-t-transparent border-b-transparent border-l-indigo-600 transform -translate-y-[4px]"></div>
+                                            <span class="absolute top-[-10px] left-1/2 transform -translate-x-1/2 bg-slate-50 px-2 text-xs font-bold text-indigo-600">2. Redirect (Scope 요청)</span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Step 3 -->
+                                    <div class="grid grid-cols-3 gap-4 items-center relative">
+                                        <div class="col-start-3 justify-self-center z-10">
+                                            <div class="bg-white border-2 border-slate-400 px-3 py-1 rounded shadow-sm text-xs">
+                                                3. 로그인 및 동의
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Step 4 -->
+                                    <div class="grid grid-cols-3 gap-4 items-center relative">
+                                        <div class="col-span-2 col-start-2 relative h-8">
+                                            <div class="absolute top-1/2 left-[0%] right-[0%] h-0.5 bg-slate-400"></div>
+                                            <div class="absolute top-1/2 left-[0%] w-0 h-0 border-t-4 border-b-4 border-r-8 border-t-transparent border-b-transparent border-r-slate-600 transform -translate-y-[4px]"></div>
+                                            <span class="absolute top-[-10px] left-1/2 transform -translate-x-1/2 bg-slate-50 px-2 text-xs font-bold text-slate-600">4. Auth Code (Callback)</span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Step 5 -->
+                                    <div class="grid grid-cols-3 gap-4 items-center relative">
+                                        <div class="col-span-2 col-start-2 relative h-8">
+                                            <div class="absolute top-1/2 left-[0%] right-[0%] h-0.5 bg-green-500"></div>
+                                            <div class="absolute top-1/2 left-[0%] w-0 h-0 border-t-4 border-b-4 border-r-8 border-t-transparent border-b-transparent border-r-green-600 transform -translate-y-[4px]"></div>
+                                            <div class="absolute top-1/2 right-[0%] w-0 h-0 border-t-4 border-b-4 border-l-8 border-t-transparent border-b-transparent border-l-green-600 transform -translate-y-[4px]"></div>
+                                            <span class="absolute top-[-10px] left-1/2 transform -translate-x-1/2 bg-slate-50 px-2 text-xs font-bold text-green-600">5. Token 교환 (Back-channel)</span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Step 6 -->
+                                    <div class="grid grid-cols-3 gap-4 items-center relative">
+                                        <div class="col-start-2 justify-self-center z-10">
+                                            <div class="bg-indigo-100 border-2 border-indigo-400 px-3 py-2 rounded shadow-sm text-xs text-indigo-900">
+                                                <strong>6. 로그인 완료</strong><br>
+                                                <span class="text-[10px] opacity-75">Custom Claims: Dept, Rank</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Key Points (Footer) -->
+                        <div class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="bg-yellow-50 p-4 rounded-lg border border-yellow-200 text-sm text-yellow-800 flex items-start gap-3">
+                                <span class="text-xl">💡</span>
+                                <div>
+                                    <strong>핵심 포인트 (Core Verification):</strong> 백엔드 서버는 DB 조회를 하지 않습니다. 대신 IdP의 공개키(Public Key)를 사용하여 JWT의 서명을 검증합니다. 서명이 유효하다면, 토큰 내부의 사용자 정보(payload)를 신뢰하고 즉시 비즈니스 로직을 수행합니다.
+                                </div>
+                            </div>
+                            <div class="bg-blue-50 p-4 rounded-lg border border-blue-200 text-sm text-blue-900 flex items-start gap-3">
+                                <span class="text-xl">🚀</span>
+                                <div>
+                                    <strong>확장 포인트 (Scalability):</strong> 이 방식은 RP가 매번 사용자 DB를 조회할 필요를 없앱니다. 필요한 모든 정보는 신뢰할 수 있는 IdP가 서명한 토큰 안에 들어있기 때문입니다.
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -581,6 +668,24 @@
             }
 
             grid.innerHTML = renderTechCards(filtered);
+        }
+
+        function toggleArchDetails() {
+            const container = document.getElementById('detailed-architecture-flow');
+            const btn = document.getElementById('arch-toggle-btn');
+
+            container.classList.toggle('hidden');
+
+            if (container.classList.contains('hidden')) {
+                btn.innerHTML = '<span>🔍 상세 시퀀스 다이어그램 보기 (Expand)</span>';
+                container.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            } else {
+                btn.innerHTML = '<span>🔼 상세 내용 접기 (Collapse)</span>';
+                // Slight delay to allow DOM update before scrolling
+                setTimeout(() => {
+                    container.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }, 100);
+            }
         }
 
         function renderDeepDive(container) {
