@@ -161,6 +161,14 @@
                         </button>
                     </li>
                     <li>
+                        <button onclick="navigate('legacy')"
+                            class="nav-item w-full text-left px-4 py-3 rounded-lg hover:bg-slate-800 hover:text-white transition-colors flex items-center gap-3 group focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                            data-target="legacy">
+                            <span class="text-lg opacity-70 group-hover:opacity-100">🔄</span>
+                            <span class="font-medium">통합 전략</span>
+                        </button>
+                    </li>
+                    <li>
                         <button onclick="navigate('implementation')"
                             class="nav-item w-full text-left px-4 py-3 rounded-lg hover:bg-slate-800 hover:text-white transition-colors flex items-center gap-3 group focus:outline-none focus:ring-2 focus:ring-indigo-500"
                             data-target="implementation">
@@ -231,16 +239,56 @@
                     { feature: "보안 모델", session: "CSRF 취약 (쿠키 사용 시)", jwt: "XSS 주의 (저장소 중요), CSRF 안전" }
                 ]
             },
+            legacy: {
+                strategies: [
+                    {
+                        level: "Level 1",
+                        key: "auth_only",
+                        name: "단순 인증 연동 (Auth Only)",
+                        tagline: "최소한의 변경",
+                        desc: "기존의 로컬 DB와 회원 로직을 그대로 유지합니다. 오직 '로그인' 과정에서만 OIDC 코드를 사용해 신원을 확인하고, 로컬 DB의 사용자와 매핑하여 세션을 생성합니다.",
+                        mechanism: "OIDC Sub ➔ Local DB 매핑",
+                        pros: ["비즈니스 로직 수정 없음", "빠른 SSO 도입 가능"],
+                        cons: ["여전히 세션/DB 관리 필요", "프로비저닝 수동 구현 필요"],
+                        color: "slate",
+                        icon: "🔗"
+                    },
+                    {
+                        level: "Level 2",
+                        key: "jit",
+                        name: "JIT 프로비저닝 (Sync)",
+                        tagline: "현실적인 타협안",
+                        desc: "로그인 성공 시점(Just-In-Time)에 ID Token의 정보를 바탕으로 로컬 DB의 사용자 정보를 자동으로 생성(Insert)하거나 최신화(Update)합니다.",
+                        mechanism: "Token Claims ➔ DB Upsert",
+                        pros: ["회원가입 절차 제거", "기존 FK(외래키) 관계 유지 가능"],
+                        cons: ["데이터 중복 저장으로 SSoT 원칙 위반", "양쪽 정보 불일치 가능성(퇴사자 처리 등)"],
+                        color: "indigo",
+                        icon: "🔄"
+                    },
+                    {
+                        level: "Level 3",
+                        key: "stateless",
+                        name: "완전 무상태 (Stateless)",
+                        tagline: "권장 아키텍처",
+                        desc: "로컬 DB에서 사용자 테이블을 완전히 제거합니다. 클라이언트는 오직 토큰의 서명과 유효기간만 신뢰하며, 사용자 정보는 토큰 페이로드에서 직접 꺼내 사용합니다.",
+                        mechanism: "No DB Access, Verify Only",
+                        pros: ["무한 확장성 & Zero 관리", "개인정보 리스크 제거"],
+                        cons: ["조인(Join) 쿼리 불가", "마이그레이션 난이도 높음"],
+                        color: "emerald",
+                        icon: "✨"
+                    }
+                ]
+            },
             toolkit: [
                 { stack: "PHP", category: "Backend", name: "firebase/php-jwt", desc: "가장 널리 쓰이는 경량 JWT 디코딩 라이브러리. 의존성이 적어 레거시 통합에 유리.", link: "GitHub / Packagist", url: "https://github.com/firebase/php-jwt" },
                 { stack: "PHP", category: "Backend", name: "auth0/auth0-php", desc: "OIDC 전체 흐름을 처리하는 강력한 SDK. 로그인 리다이렉트 및 토큰 검증 자동화.", link: "GitHub / Packagist", url: "https://github.com/auth0/auth0-PHP" },
                 { stack: "Go", category: "Backend", name: "coreos/go-oidc", desc: "OIDC Discovery 문서를 통해 퍼블릭 키를 자동 갱신하고 검증하는 로직 내장.", link: "GitHub / Module", url: "https://github.com/coreos/go-oidc" },
+                { stack: "C# .NET (Winform/WPF)", category: "Desktop", name: "auth0/WinFormsWPF-oidc", desc: "네이티브 앱을 위한 인증 라이브러리. WPF/WinForms 등의 데스크톱 앱에서 PCKE 흐름 지원 예제.", link: "GitHub", url: "https://github.com/auth0-samples/auth0-WinFormsWPF-oidc-samples" },
+                { stack: "C# .NET (MAUI)", category: "Mobile/Desktop", name: "Microsoft.Identity.Client", desc: "MSAL for .NET. 안드로이드, iOS, 윈도우 등 멀티플랫폼 인증을 단일 코드로 처리 가능.", link: "NuGet", url: "https://www.nuget.org/packages/Microsoft.Identity.Client" },
+                { stack: "C# .NET (Blazor)", category: "Frontend", name: "WebAssembly.Authentication", desc: "Blazor WASM을 위한 내장 인증 라이브러리. ASP.NET Core Identity 및 OIDC와 매끄럽게 통합.", link: "MS Docs", url: "https://learn.microsoft.com/en-us/aspnet/core/blazor/security/webassembly/" },
                 { stack: "Node (Express)", category: "Backend", name: "@auth0/express-oauth2-jwt-bearer", desc: "미들웨어 형태로 토큰 검증. 라우트 별 보호가 매우 간편함.", link: "NPM", url: "https://www.npmjs.com/package/@auth0/express-oauth2-jwt-bearer" },
                 { stack: "Node (React)", category: "Frontend", name: "react-oidc-context", desc: "React Context API 기반. 훅(Hook)을 통해 로그인 상태와 사용자 정보를 전역 관리.", link: "NPM", url: "https://www.npmjs.com/package/react-oidc-context" },
                 { stack: "Flutter", category: "Mobile", name: "flutter_appauth", desc: "AppAuth 네이티브 SDK 래퍼. PKCE 흐름을 완벽 지원하여 보안성 최상.", link: "Pub.dev", url: "https://pub.dev/packages/flutter_appauth" },
-                { stack: "C# .NET (Winform/WPF)", category: "Desktop", name: "auth0/WinFormsWPF-oidc", desc: "네이티브 앱을 위한 인증 라이브러리. WPF/WinForms 등의 데스크톱 앱에서 PCKE 흐름 지원 예제.", link: "GitHub", url: "https://github.com/auth0-samples/auth0-WinFormsWPF-oidc-samples" },
-                { stack: "C# .NET (MAUI)", category: "Mobile/Desktop", name: "Microsoft.Identity.Client", desc: "MSAL for .NET. 안드로이드, iOS, 윈도우 등 멀티플랫폼 인증을 단일 코드로 처리 가능.", link: "NuGet", url: "https://www.nuget.org/packages/Microsoft.Identity.Client" },
-                { stack: "C# .NET (Blazor)", category: "Frontend", name: "WebAssembly.Authentication", desc: "Blazor WASM을 위한 내장 인증 라이브러리. ASP.NET Core Identity 및 OIDC와 매끄럽게 통합.", link: "MS Docs", url: "https://learn.microsoft.com/en-us/aspnet/core/blazor/security/webassembly/" }
             ],
             deepdive: {
                 rfcData: [
@@ -302,6 +350,9 @@
                     break;
                 case 'jwt':
                     renderJWT(contentArea);
+                    break;
+                case 'legacy':
+                    renderLegacy(contentArea);
                     break;
                 case 'implementation':
                     renderImplementation(contentArea);
@@ -609,15 +660,15 @@
 
         function renderImplementation(container) {
             container.innerHTML = `
-                <section id="implementation" class="content-section space-y-8 animate-fade-in" tabindex="-1">
+                <section id="implementation" class="content-section space-y-8 animate-fade-in xl:h-[calc(100vh-6rem)] xl:space-y-0 xl:flex xl:flex-col xl:justify-between" tabindex="-1">
                     <!-- Intro -->
-                    <div>
+                    <div class="xl:flex-none xl:mb-6">
                         <h2 class="text-2xl font-bold text-slate-900 mb-3">구현 툴킷 & 라이브러리</h2>
                         <p class="text-slate-600">연구팀이 즉시 도입 가능한 플랫폼별 검증된 라이브러리와 관련문서입니다. 각 라이브러리는 OIDC/JWT 표준을 준수합니다.</p>
                     </div>
 
                     <!-- Filters -->
-                    <div class="flex flex-wrap gap-2" id="tech-filters">
+                    <div class="flex flex-wrap gap-2 xl:flex-none xl:mb-6" id="tech-filters">
                         <button onclick="filterTech('All')" class="px-4 py-2 rounded-full text-sm font-medium bg-slate-800 text-white shadow-md transition-all hover:bg-slate-700">All</button>
                         <button onclick="filterTech('PHP')" class="px-4 py-2 rounded-full text-sm font-medium bg-white text-slate-600 border border-slate-200 hover:border-indigo-500 hover:text-indigo-600 transition-all">PHP</button>
                         <button onclick="filterTech('Go')" class="px-4 py-2 rounded-full text-sm font-medium bg-white text-slate-600 border border-slate-200 hover:border-indigo-500 hover:text-indigo-600 transition-all">Go</button>
@@ -627,7 +678,7 @@
                     </div>
 
                     <!-- Grid -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="tech-grid">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 xl:flex-1 xl:min-h-0 xl:overflow-y-auto pr-2" id="tech-grid">
                         ${renderTechCards(appData.toolkit)}
                     </div>
                 </section>
@@ -1176,6 +1227,130 @@
                     }
                 }
             });
+        }
+
+
+        function renderLegacy(container) {
+            const data = appData.legacy.strategies;
+
+            container.innerHTML = `
+                <section id="legacy" class="content-section space-y-10 animate-fade-in xl:h-[calc(100vh-6rem)] xl:space-y-0 xl:flex xl:flex-col xl:justify-between" tabindex="-1">
+                    <!-- Intro -->
+                    <div class="text-center max-w-3xl mx-auto xl:flex-none xl:mb-6">
+                        <span class="inline-block px-3 py-1 bg-slate-100 text-slate-600 rounded-full text-xs font-bold mb-4 tracking-wide uppercase border border-slate-200">Migration Guide</span>
+                        <h2 class="text-3xl font-bold text-slate-900 mb-2">레거시 시스템을 위한 통합 전략</h2>
+                    </div>
+
+                    <!-- Infographic / Card Grid -->
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 xl:flex-1 xl:min-h-0 xl:gap-8 xl:items-stretch">
+                        ${data.map(strategy => {
+                const isRecommended = strategy.key === 'stateless';
+                const borderColor = isRecommended ? 'border-emerald-400 ring-4 ring-emerald-50' : `border-${strategy.color}-200`;
+                const headerBg = isRecommended ? 'bg-gradient-to-r from-emerald-500 to-teal-500 text-white' : 'bg-slate-50 text-slate-800';
+
+                // Visual Diagram Logic (Mini Infographic)
+                let diagram = '';
+                if (strategy.key === 'auth_only') {
+                    diagram = `
+                                    <div class="flex flex-col gap-2 text-xs font-mono mt-4 p-3 bg-slate-100 rounded border border-slate-200 opacity-80">
+                                        <div class="flex justify-between items-center">
+                                            <span class="bg-indigo-100 text-indigo-700 px-1 rounded">OIDC</span>
+                                            <span class="text-slate-400">Login Only</span>
+                                            <span class="bg-slate-300 text-slate-700 px-1 rounded">DB</span>
+                                        </div>
+                                        <div class="h-px bg-slate-300 w-full my-1 relative">
+                                            <div class="absolute -top-2 left-1/2 -translate-x-1/2 bg-white px-1 text-[10px] text-slate-400">Mapping</div>
+                                        </div>
+                                        <div class="text-center text-slate-500">Session Created</div>
+                                    </div>
+                                `;
+                } else if (strategy.key === 'jit') {
+                    diagram = `
+                                    <div class="flex flex-col gap-2 text-xs font-mono mt-4 p-3 bg-indigo-50 rounded border border-indigo-100">
+                                        <div class="flex justify-between items-center">
+                                            <span class="bg-indigo-600 text-white px-1 rounded">Token</span>
+                                            <span class="text-indigo-400">Sync ➔</span>
+                                            <span class="bg-slate-700 text-white px-1 rounded">DB</span>
+                                        </div>
+                                        <div class="h-px bg-indigo-300 w-full my-1 relative">
+                                            <div class="absolute -top-2 left-1/2 -translate-x-1/2 bg-white px-1 text-[10px] text-indigo-500">Upsert (JIT)</div>
+                                        </div>
+                                        <div class="text-center font-bold text-indigo-700">Data Synced</div>
+                                    </div>
+                                `;
+                } else {
+                    diagram = `
+                                    <div class="flex flex-col gap-2 text-xs font-mono mt-4 p-3 bg-emerald-50 rounded border border-emerald-200">
+                                        <div class="flex justify-between items-center">
+                                            <span class="bg-emerald-600 text-white px-1 rounded">Token</span>
+                                            <span class="text-emerald-500">Verify</span>
+                                            <span class="bg-red-100 text-red-400 px-1 rounded line-through decoration-red-500">DB</span>
+                                        </div>
+                                        <div class="h-px bg-emerald-300 w-full my-1 relative">
+                                            <div class="absolute -top-2 left-1/2 -translate-x-1/2 bg-white px-1 text-[10px] text-emerald-500">Trust Signature</div>
+                                        </div>
+                                        <div class="text-center font-bold text-emerald-700">Zero State</div>
+                                    </div>
+                                `;
+                }
+
+                return `
+                                <div class="bg-white rounded-2xl shadow-lg border ${borderColor} overflow-hidden hover:-translate-y-1 transition-transform duration-300 flex flex-col xl:h-full">
+                                    <div class="p-6 ${headerBg} border-b border-transparent xl:py-4">
+                                        <div class="flex justify-between items-start mb-2">
+                                            <span class="text-xs font-bold uppercase tracking-wider opacity-80">${strategy.level}</span>
+                                            <span class="text-2xl">${strategy.icon}</span>
+                                        </div>
+                                        <h3 class="text-xl font-bold mb-1">${strategy.name}</h3>
+                                        <p class="text-sm opacity-90">${strategy.tagline}</p>
+                                    </div>
+                                    
+                                    <div class="p-6 flex-grow flex flex-col xl:p-4 xl:justify-between">
+                                        <p class="text-slate-600 text-sm leading-relaxed mb-4 flex-grow xl:mb-2">
+                                            ${strategy.desc}
+                                        </p>
+                                        
+                                        <!-- Diagram visual -->
+                                        ${diagram}
+
+                                        <!-- Pros/Cons -->
+                                        <div class="mt-6 space-y-4 xl:mt-4 xl:space-y-2">
+                                            <div>
+                                                <h4 class="text-xs font-bold text-slate-400 uppercase mb-2 xl:mb-1">장점 (Pros)</h4>
+                                                <ul class="space-y-1">
+                                                    ${strategy.pros.map(p => `<li class="text-sm text-slate-700 flex items-start gap-2"><span class="text-green-500">✔</span> ${p}</li>`).join('')}
+                                                </ul>
+                                            </div>
+                                            <div>
+                                                <h4 class="text-xs font-bold text-slate-400 uppercase mb-2 xl:mb-1">단점 (Cons)</h4>
+                                                <ul class="space-y-1">
+                                                    ${strategy.cons.map(c => `<li class="text-sm text-slate-500 flex items-start gap-2"><span class="text-red-400">✗</span> ${c}</li>`).join('')}
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+            }).join('')}
+                    </div>
+
+                    <!-- Recommendation Banner -->
+                    <div class="bg-slate-800 rounded-xl p-4 text-center sm:text-left flex flex-col sm:flex-row items-center gap-4 shadow-xl xl:flex-none xl:mt-6">
+                        <div class="flex-shrink-0 w-20 h-20 bg-indigo-500 rounded-full flex items-center justify-center text-4xl shadow-inner">
+                            🎯
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-white mb-1">바론 기술기획팀의 권장 전략</h3>
+                            <p class="text-indigo-100 text-sm sm:text-base leading-relaxed">
+                                신규 프로젝트라면 <strong class="text-emerald-400">Level 3 (Stateless)</strong>를 목표로 하세요.<br>
+                                하지만 기존 레거시 시스템을 전환해야 한다면, <strong class="text-white">Level 2 (JIT Provisioning)</strong>가 가장 현실적이고 안전한 중간 단계입니다. 
+                                사용자의 로그인 경험을 해치지 않으면서 점진적으로 인증 책임을 IdP로 이관할 수 있습니다.
+                                다만, 인가(Authorization) 요건에 따라 ReBAC로 구현이 어려운 특수 요건들이 있는 경우 담당자와 협의를 해야 할 수 있습니다.
+                            </p>
+                        </div>
+                    </div>
+                </section>
+            `;
         }
 
         // Navigation helpers: hash-based routing
