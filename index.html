@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>확장 가능한 전략: OIDC 및 JWT 기반 무상태 아키텍처</title>
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
@@ -174,6 +175,14 @@
                             data-target="implementation">
                             <span class="text-lg opacity-70 group-hover:opacity-100">🛠️</span>
                             <span class="font-medium">구현 툴킷</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button onclick="navigate('integration')"
+                            class="nav-item w-full text-left px-4 py-3 rounded-lg hover:bg-slate-800 hover:text-white transition-colors flex items-center gap-3 group focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                            data-target="integration">
+                            <span class="text-lg opacity-70 group-hover:opacity-100">🚀</span>
+                            <span class="font-medium">연동 가이드</span>
                         </button>
                     </li>
                 </ul>
@@ -359,6 +368,9 @@
                     break;
                 case 'deepdive':
                     renderDeepDive(contentArea);
+                    break;
+                case 'integration':
+                    renderIntegration(contentArea);
                     break;
                 default:
                     renderOverview(contentArea);
@@ -660,15 +672,15 @@
 
         function renderImplementation(container) {
             container.innerHTML = `
-                <section id="implementation" class="content-section space-y-8 animate-fade-in xl:h-[calc(100vh-6rem)] xl:space-y-0 xl:flex xl:flex-col xl:justify-between" tabindex="-1">
+                <section id="implementation" class="content-section space-y-8 animate-fade-in pb-12" tabindex="-1">
                     <!-- Intro -->
-                    <div class="xl:flex-none xl:mb-6">
+                    <div>
                         <h2 class="text-2xl font-bold text-slate-900 mb-3">구현 툴킷 & 라이브러리</h2>
                         <p class="text-slate-600">연구팀이 즉시 도입 가능한 플랫폼별 검증된 라이브러리와 관련문서입니다. 각 라이브러리는 OIDC/JWT 표준을 준수합니다.</p>
                     </div>
 
                     <!-- Filters -->
-                    <div class="flex flex-wrap gap-2 xl:flex-none xl:mb-6" id="tech-filters">
+                    <div class="flex flex-wrap gap-2" id="tech-filters">
                         <button onclick="filterTech('All')" class="px-4 py-2 rounded-full text-sm font-medium bg-slate-800 text-white shadow-md transition-all hover:bg-slate-700">All</button>
                         <button onclick="filterTech('PHP')" class="px-4 py-2 rounded-full text-sm font-medium bg-white text-slate-600 border border-slate-200 hover:border-indigo-500 hover:text-indigo-600 transition-all">PHP</button>
                         <button onclick="filterTech('Go')" class="px-4 py-2 rounded-full text-sm font-medium bg-white text-slate-600 border border-slate-200 hover:border-indigo-500 hover:text-indigo-600 transition-all">Go</button>
@@ -1353,7 +1365,96 @@
             `;
         }
 
-        // Navigation helpers: hash-based routing
+        function renderIntegration(container) {
+            container.innerHTML = `
+                <section id="integration" class="content-section space-y-8 animate-fade-in pb-12" tabindex="-1">
+                     <!-- Intro -->
+                    <div>
+                        <h2 class="text-3xl font-bold text-slate-900 mb-3">연동 가이드 (Integration Guide)</h2>
+                        <p class="text-slate-600">OIDC(OpenID Connect) 기반의 안전한 인증 시스템 연동을 위한 단계별 절차입니다.</p>
+                    </div>
+
+                    <!-- Process Steps -->
+                    <div class="bg-white rounded-2xl shadow-lg border border-indigo-100 overflow-hidden">
+                        <div class="p-8">
+                            <div class="relative max-w-5xl mx-auto">
+                                <!-- Connecting Line -->
+                                <div class="absolute left-6 top-4 bottom-4 w-0.5 bg-slate-200"></div>
+
+                                <!-- Step 0 -->
+                                <div class="relative flex flex-col md:flex-row gap-8 mb-12 group">
+                                    <div class="flex-shrink-0 flex items-start">
+                                        <div class="w-12 h-12 bg-white rounded-full border-4 border-slate-100 shadow-sm flex items-center justify-center font-bold text-slate-400 z-10 group-hover:border-indigo-100 group-hover:bg-indigo-500 group-hover:text-white transition-all ring-4 ring-white">0</div>
+                                    </div>
+                                    <div class="pt-1 flex-1">
+                                        <h4 class="text-xl font-bold text-slate-800 mb-2 group-hover:text-indigo-700 transition-colors">담당자 계정 정보 전달하기</h4>
+                                        <div class="bg-slate-50 p-6 rounded-xl border border-slate-100 text-slate-600 group-hover:border-indigo-100 transition-colors shadow-sm">
+                                            <p>보안팀 또는 플랫폼팀 담당자에게 연동 책임자의 정보(이메일, 부서 등)를 전달하여 관리자 권한을 사전 요청합니다.</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Step 1 -->
+                                <div class="relative flex flex-col md:flex-row gap-8 mb-12 group">
+                                    <div class="flex-shrink-0 flex items-start">
+                                        <div class="w-12 h-12 bg-white rounded-full border-4 border-slate-100 shadow-sm flex items-center justify-center font-bold text-slate-400 z-10 group-hover:border-indigo-100 group-hover:bg-indigo-500 group-hover:text-white transition-all ring-4 ring-white">1</div>
+                                    </div>
+                                    <div class="pt-1 flex-1 space-y-4">
+                                        <div>
+                                            <h4 class="text-xl font-bold text-slate-800 mb-2 group-hover:text-indigo-700 transition-colors">Staging DevFront에 Client 추가</h4>
+                                            <p class="text-slate-600 mb-4">Staging 관리자 페이지(DevFront)에 접속하여 신규 Client(RP)를 등록하고, Client ID 및 Redirect URI 등 필수 정보를 설정합니다.</p>
+                                        </div>
+                                        
+                                        <!-- Image Placeholder -->
+                                        <div class="w-full aspect-video bg-slate-100 rounded-xl border-2 border-dashed border-slate-300 flex flex-col items-center justify-center relative overflow-hidden group/image">
+                                            <img src="./img/dev_client_detail.png" alt="Staging Admin Screenshot" class="object-contain w-full h-full"/>
+                                            <div class="absolute inset-0 bg-slate-900/5 opacity-0 group-hover/image:opacity-100 transition-opacity flex items-center justify-center pointer-events-none">
+                                                <span class="bg-white px-4 py-2 rounded-full text-xs font-bold shadow-sm text-slate-700">관리자 화면 예시</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Step 2 -->
+                                <div class="relative flex flex-col md:flex-row gap-8 mb-12 group">
+                                    <div class="flex-shrink-0 flex items-start">
+                                        <div class="w-12 h-12 bg-white rounded-full border-4 border-slate-100 shadow-sm flex items-center justify-center font-bold text-slate-400 z-10 group-hover:border-indigo-100 group-hover:bg-indigo-500 group-hover:text-white transition-all ring-4 ring-white">2</div>
+                                    </div>
+                                    <div class="pt-1 flex-1 space-y-4">
+                                        <div>
+                                            <h4 class="text-xl font-bold text-slate-800 mb-2 group-hover:text-indigo-700 transition-colors">구현 툴킷을 활용한 연동 작업 진행</h4>
+                                            <p class="text-slate-600 mb-4">발급받은 Client 상세 정보를 바탕으로, <a href="#implementation" onclick="navigate('implementation')" class="text-indigo-600 font-bold hover:underline">구현 툴킷</a>에서 적합한 라이브러리를 선택하여 실제 코드 연동을 진행합니다.</p>
+                                        </div>
+
+                                        <!-- Image Placeholder -->
+                                        <div class="w-full aspect-video bg-slate-100 rounded-xl border-2 border-dashed border-slate-300 flex flex-col items-center justify-center relative overflow-hidden group/image">
+                                            <img src="./img/ide.png" alt="IDE Code Example" class="object-contain w-full h-full"/>
+                                            <div class="absolute inset-0 bg-slate-900/5 opacity-0 group-hover/image:opacity-100 transition-opacity flex items-center justify-center pointer-events-none">
+                                                <span class="bg-white px-4 py-2 rounded-full text-xs font-bold shadow-sm text-slate-700">코드 구현 예시</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Step 3 -->
+                                <div class="relative flex flex-col md:flex-row gap-8 group">
+                                    <div class="flex-shrink-0 flex items-start">
+                                        <div class="w-12 h-12 bg-white rounded-full border-4 border-slate-100 shadow-sm flex items-center justify-center font-bold text-slate-400 z-10 group-hover:border-indigo-100 group-hover:bg-indigo-500 group-hover:text-white transition-all ring-4 ring-white">3</div>
+                                    </div>
+                                    <div class="pt-1 flex-1">
+                                        <h4 class="text-xl font-bold text-slate-800 mb-2 group-hover:text-indigo-700 transition-colors">Staging 연동상황 기술검토 및 배포 논의</h4>
+                                        <div class="bg-slate-50 p-6 rounded-xl border border-slate-100 text-slate-600 group-hover:border-indigo-100 transition-colors shadow-sm">
+                                           <p>Staging 환경에서의 연동 기술 검토를 완료한 후, Production 배포 일정과 트래픽 수용 계획을 기술팀과 최종 논의합니다.</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            `;
+        }
         function navigate(route) {
             if (!route) return;
             if (location.hash.replace('#', '') !== route) {
